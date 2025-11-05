@@ -1,0 +1,68 @@
+name: 🧱 Test and Deploy MiniStudio (v1.4.5 - Strict)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧭 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Installation de Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Installation des dépendances backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install black flake8 pytest
+
+      # -------------------------------
+      # Vérifications Backend FastAPI
+      # -------------------------------
+
+      - name: 💅 Vérification stricte du style de code (Black)
+        run: |
+          black --check fastapi_app
+
+      - name: 🧹 Analyse PEP8 stricte (Flake8)
+        run: |
+          flake8 fastapi_app --max-line-length=120
+
+      - name: 🧪 Tests unitaires stricts (Pytest)
+        run: |
+          pytest -v --maxfail=1 --disable-warnings --strict-markers
+
+      # -------------------------------
+      # Vérifications Frontend React
+      # -------------------------------
+
+      - name: 🧩 Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📁 Installation stricte des dépendances npm
+        working-directory: ./frontend
+        run: |
+          npm ci
+
+      - name: 🏗️ Build strict du frontend React
+        working-directory: ./frontend
+        run: |
+          npm run build
+
+      # -------------------------------
+      # Étape finale : Validation stricte
+      # -------------------------------
+
+      - name: ✅ Validation complète CI/CD (Strict)
+        run: echo "🎯 Tous les tests et vérifications MiniStudio v1.4.5 ont réussi sans erreur ✅"
