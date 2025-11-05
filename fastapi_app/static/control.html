@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>MiniStudio Control Panel</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="control.js"></script>
+</head>
+<body>
+  <header>
+    <h1>MiniStudio Control Panel</h1>
+  </header>
+  <main style="text-align:center;margin-top:2em;">
+    <h2>Gestion du serveur</h2>
+    <button id="startServer">🟢 Démarrer FastAPI</button>
+    <button id="stopServer">🔴 Arrêter FastAPI</button>
+    <button id="restartServer">🌀 Redémarrer FastAPI</button>
+    <h2>Gestion de ngrok</h2>
+    <button id="startNgrok">🌐 Démarrer ngrok</button>
+    <button id="stopNgrok">❌ Arrêter ngrok</button>
+    <h2>Clé API</h2>
+    <p id="apiKey">Chargement...</p>
+  </main>
+</body>
+</html>

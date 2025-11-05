@@ -1,0 +1,3 @@
+
+def hello_world():
+    return "👋 Salut depuis MiniStudioGPT v1.4 (mode review)!"

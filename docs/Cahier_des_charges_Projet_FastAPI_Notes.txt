@@ -1,0 +1,147 @@
+CAHIER DES CHARGES – PROJET TEST COMMUN : FASTAPI NOTES
+Version : 1.0
+Date : 2 novembre 2025
+Rédacteur : ChatGPT
+Objectif : Comparer les approches de CodeGPT et du GPT personnel de Rachid Hammami
+Durée estimée : 1 à 2 sessions de travail par assistant
+
+--------------------------------------
+🎯 OBJECTIF GLOBAL
+Créer une mini-application web locale en Python avec FastAPI, appelée “FastAPI Notes”,
+permettant de gérer des notes textuelles (ajout, lecture, suppression) via une interface API REST.
+Les notes doivent être stockées dans un fichier JSON local et manipulables via des requêtes HTTP.
+L’application doit être légère, autonome, et facile à exécuter localement.
+
+--------------------------------------
+⚙️ SPÉCIFICATIONS TECHNIQUES
+
+1. Technologies à utiliser :
+- Langage : Python 3.11
+- Framework : FastAPI
+- Serveur : Uvicorn
+- Fichier de stockage : notes.json
+- Format des données : JSON
+
+2. Fonctionnalités principales :
+| Méthode | Route | Description |
+|----------|--------|-------------|
+| GET /notes | Récupère la liste de toutes les notes existantes |
+| POST /notes | Ajoute une nouvelle note (titre + contenu) |
+| DELETE /notes/{id} | Supprime la note correspondant à l’identifiant fourni |
+
+--------------------------------------
+🧱 STRUCTURE DE FICHIERS ATTENDUE
+
+FastAPINotes/
+├── main.py
+├── models.py
+├── storage.py
+├── notes.json
+├── test_app.py
+└── requirements.txt
+
+Détails :
+- main.py → point d’entrée FastAPI (routes, lancement Uvicorn)
+- models.py → définition de la classe Note (id, title, content)
+- storage.py → gestion du fichier JSON (lecture, écriture, suppression)
+- notes.json → fichier de données local (créé automatiquement)
+- test_app.py → tests unitaires simples (ajout, lecture, suppression)
+- requirements.txt → dépendances minimales (fastapi, uvicorn, pytest)
+
+--------------------------------------
+📋 MODÈLE DE DONNÉES
+
+{
+  "id": int,
+  "title": str,
+  "content": str
+}
+
+Les identifiants doivent être générés automatiquement (ex. : incrémentation).
+
+--------------------------------------
+🔗 EXEMPLES DE REQUÊTES API
+
+POST /notes
+Body :
+{
+  "title": "Test FastAPI",
+  "content": "Première note enregistrée"
+}
+Réponse :
+{
+  "id": 1,
+  "title": "Test FastAPI",
+  "content": "Première note enregistrée"
+}
+
+GET /notes
+Réponse :
+[
+  {
+    "id": 1,
+    "title": "Test FastAPI",
+    "content": "Première note enregistrée"
+  }
+]
+
+DELETE /notes/1
+Réponse :
+{"message": "Note 1 supprimée avec succès"}
+
+--------------------------------------
+🧪 TESTS À IMPLÉMENTER
+
+Créer test_app.py avec 3 tests :
+1. test_add_note() → vérifie qu’une note ajoutée est bien enregistrée.
+2. test_list_notes() → vérifie que la liste contient la note ajoutée.
+3. test_delete_note() → vérifie qu’une note supprimée n’est plus présente.
+
+Exécution : pytest -v
+
+--------------------------------------
+🧭 CRITÈRES DE RÉUSSITE
+
+| Critère | Description |
+|----------|-------------|
+| Fonctionnalité | Les routes GET, POST, DELETE fonctionnent correctement |
+| Persistance | Les données sont sauvegardées dans notes.json |
+| Robustesse | Pas d’erreur si fichier vide ou inexistant |
+| Tests unitaires | Tous les tests passent avec succès |
+| Clarté du code | Code bien structuré et lisible |
+| Documentation | README.md simple expliquant comment lancer l’app |
+
+--------------------------------------
+🚀 COMMANDES UTILES
+
+Installation :
+pip install -r requirements.txt
+
+Lancement :
+uvicorn main:app --reload
+
+Interface API :
+http://127.0.0.1:8000/docs
+
+--------------------------------------
+📦 RÉSULTATS ATTENDUS
+
+- Application fonctionnelle FastAPINotes/
+- Tous les tests unitaires réussis
+- Fichier notes.json avec au moins une note
+- README.md décrivant le projet
+
+--------------------------------------
+🔍 ÉTAPES DU TEST COMPARATIF
+
+1. Sauvegarde du MiniStudio avant modification.
+2. Exécution du projet avec CodeGPT.
+3. Restauration du MiniStudio.
+4. Exécution du projet avec le GPT personnel.
+5. Comparaison des deux résultats.
+
+--------------------------------------
+✅ RÉSUMÉ FINAL
+
+Le projet FastAPI Notes doit être simple, complet, autonome,
+et servir de base neutre pour comparer les styles et méthodes de développement des deux assistants IA.

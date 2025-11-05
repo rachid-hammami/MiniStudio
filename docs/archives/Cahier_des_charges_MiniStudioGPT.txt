@@ -1,0 +1,99 @@
+CAHIER DES CHARGES – MISE À JOUR DU BUILDER GPT (MINISTUDIO V1.1)
+==================================================================
+
+Ce document décrit les consignes officielles destinées à CodeGPT pour la mise à jour et la correction du projet MiniStudio (version 1.1).
+L’objectif est de stabiliser, simplifier et unifier le backend FastAPI en s’appuyant sur les routes /project/* et sur la configuration Cloudflare existante, sans clé API additionnelle.
+
+------------------------------------------------------------------
+1. OBJECTIFS GÉNÉRAUX
+------------------------------------------------------------------
+- Unifier toutes les routes autour de /project/* (lecture, écriture, liste).
+- Supprimer ou rediriger les anciennes routes /files/*.
+- Simplifier la documentation OpenAPI (Swagger).
+- Centraliser la mémoire persistante dans /app/memory.
+- Charger toutes les variables depuis .env.
+- Maintenir la compatibilité complète avec MiniStudioGPT (mon gpt custom- le builder).
+- Utiliser Cloudflare comme seule couche de sécurité (aucun token API).
+
+------------------------------------------------------------------
+2. STRUCTURE CIBLE DU PROJET
+------------------------------------------------------------------
+/app
+ ├─ fastapi_app/
+ │  ├─ main.py
+ │  ├─ endpoints_project.py
+ ├─ memory/
+ ├─ reports/
+ ├─ .env
+  _.env.example.
+ 
+
+------------------------------------------------------------------
+3. FONCTIONNALITÉS À CONSERVER
+------------------------------------------------------------------
+GET /ping – Vérifie l’état du serveur
+POST /project/read – Lecture sécurisée d’un fichier
+POST /project/write – Écriture texte ou JSON
+GET /project/full-access – Liste complète des fichiers (debug/admin)
+
+------------------------------------------------------------------
+4. CONFIGURATION RÉSEAU ET ENVIRONNEMENT
+------------------------------------------------------------------
+Basée sur le fichier .env :
+APP_ENV, HOST, PORT, PUBLIC_URL, CLOUD_ENV, DOMAIN_NAME.
+Le CORS autorise : ministudio.store, localhost, 127.0.0.1.
+Swagger et OpenAPI doivent utiliser automatiquement PUBLIC_URL.
+
+------------------------------------------------------------------
+5. SÉCURITÉ CLOUDFLARE
+------------------------------------------------------------------
+Aucune clé ni authentification supplémentaire.
+Cloudflare assure la sécurité HTTPS, le filtrage et le proxy.
+Les routes sensibles comme /project/full-access restent accessibles uniquement via le tunnel validé.
+
+------------------------------------------------------------------
+6. MÉMOIRE PERSISTANTE
+------------------------------------------------------------------
+Dossier unique : /app/memory.
+Fichiers standards : memoire.json, session.log, project_map.json.
+Création automatique au démarrage si inexistant.
+Volume Docker : ./memory:/app/memory.
+
+------------------------------------------------------------------
+7. DÉTAILS DES ROUTES API
+------------------------------------------------------------------
+POST /project/read → lit un fichier JSON ou texte.
+POST /project/write → crée ou modifie un fichier.
+GET /project/full-access → liste complète du projet.
+GET /ping → renvoie l’état du serveur.
+
+------------------------------------------------------------------
+8. TÂCHES À EXÉCUTER PAR CODEGPT
+------------------------------------------------------------------
+1. Créer endpoints_project.py avec les routes /project/*.
+2. Supprimer secure_file_endpoints.py et project_write.py.
+3. Nettoyer main.py (inclure uniquement endpoints_project).
+4. Centraliser /app/memory.
+5. Charger toutes les valeurs via .env.
+6. Alléger Swagger.
+7. Créer .env.example.
+8. Adapter docker-compose.yml.
+9. Tester ping, read, write, full-access.
+
+------------------------------------------------------------------
+9. VALIDATION FINALE
+------------------------------------------------------------------
+API fonctionnelle via GPT.
+Swagger ≤ 4 routes.
+Mémoire unique dans /app/memory.
+Sécurité Cloudflare.
+Compatibilité GPT intacte.
+
+------------------------------------------------------------------
+10. PLAN DE LIVRAISON
+------------------------------------------------------------------
+A. Code : main.py + endpoints_project.py.
+B. Config : .env.example + docker-compose.yml.
+C. Tests : ping/read/write/full-access.
+D. Documentation : README.md à jour.
+E. Nettoyage : suppression des modules redondants.

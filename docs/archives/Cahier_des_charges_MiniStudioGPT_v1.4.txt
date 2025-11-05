@@ -1,0 +1,159 @@
+# 🧠 Cahier des charges complet – MiniStudioGPT v1.4 (Interface + Builder Core)
+## Fusion des cahiers MiniStudioGPT_v1.4 et builder_core_v1.4
+
+---
+
+## 🎯 Objectif global
+Créer une version complète et cohérente de **MiniStudioGPT v1.4**, combinant :
+- Une **interface collaborative IA ↔ humain** ;
+- Un **moteur interne de modification et de réparation de code** ;
+- Une **mémoire persistante** traçant toutes les actions ;
+- Des **modes de travail adaptatifs** (collaboratif, automatique, brouillon).
+
+---
+
+# 🔹 Partie 1 — Interface collaborative IA ↔ Humain
+
+### 🎯 Objectif
+Transformer MiniStudioGPT en un **copilote de développement** capable de proposer, écrire et modifier du code tout en gardant l’humain au centre des décisions.
+
+### Modes d’intervention
+
+| Mode | Nom interne | Description | Comportement |
+|------|--------------|--------------|---------------|
+| 👁️ Collaboratif | `review` | Propose du code à l’utilisateur et attend validation. | Le code est affiché puis écrit uniquement après accord. |
+| ⚡ Automatique | `auto` | Écrit immédiatement dans les fichiers sans affichage préalable. | Le code est directement enregistré via `/project/write`. |
+| 💬 Brouillon | `draft` | Sauvegarde la proposition sans modifier les fichiers. | Le code est stocké dans `/memory/drafts/`. |
+
+L’utilisateur peut basculer librement entre les modes :  
+> “Passe en mode auto.” / “Repasse en mode collaboratif.”
+
+---
+
+### Endpoints API (interface)
+
+| Méthode | Route | Description |
+|----------|--------|-------------|
+| `POST` | `/project/propose` | Enregistre une proposition de code sans écriture immédiate. |
+| `POST` | `/project/apply` | Applique ou rejette une proposition enregistrée. |
+| `GET` | `/project/full-access` | Liste complète du projet. |
+| `GET` | `/project/memory/status` | Vérifie les fichiers mémoire. |
+| `GET` | `/project/snapshot` | Récupère l’état complet de la mémoire. |
+
+---
+
+### Gestion mémoire et fichiers
+Structure :
+```
+/app/
+ ├── fastapi_app/
+ │    ├── main.py
+ │    └── endpoints_project.py
+ ├── memory/
+ │    ├── memoire.json
+ │    ├── session.log
+ │    ├── project_map.json
+ │    └── drafts/
+ │         ├── main_draft_20251030.json
+ │         └── endpoints_draft_20251030.json
+```
+
+Règles :
+- Brouillons valides 24h maximum.  
+- Tous les logs sont append-only.  
+- Les résumés de collaboration sont ajoutés à `memoire.json`.  
+
+---
+
+### Interaction IA ↔ Humain
+
+#### Mode collaboratif :
+1. Lecture du fichier.  
+2. Rédaction d’une proposition Python claire.  
+3. Affichage à l’utilisateur → validation demandée.  
+4. Si validé → `/project/write`, sinon `/project/propose` (brouillon).  
+
+#### Mode automatique :
+1. Lecture → génération → écriture directe (`/project/write`).  
+2. Confirmation via message :  
+   > “✅ Route /hello ajoutée dans fastapi_app/main.py”  
+
+#### Mode brouillon :
+1. Sauvegarde de la proposition dans `/memory/drafts/`.  
+2. L’utilisateur peut valider plus tard avec `/project/apply`.
+
+---
+
+### Sécurité et intégrité
+- Aucun code n’est exécuté automatiquement.  
+- Écriture limitée au dossier `/app/`.  
+- Fichiers valides uniquement (.py, .js, .html, .txt).  
+- Rejets automatiques en cas d’erreurs ou de conflits (422).
+
+---
+
+# 🔹 Partie 2 — Moteur interne : `builder_core_v1.4.py`
+
+### 🎯 Objectif
+Donner à MiniStudioGPT la capacité technique de **modifier le code Python proprement**, sans réécrire tout le fichier, avec vérification et reprise automatique.
+
+### Fonctions principales
+| Fonction | Rôle |
+|-----------|------|
+| `auto_patch_function(filepath, func_name, new_code)` | Remplace une fonction spécifique dans un fichier Python. |
+| `auto_repair_file(filepath)` | Vérifie et corrige la syntaxe du fichier modifié. |
+| `session_recovery()` | Récupère et relance les opérations incomplètes. |
+
+---
+
+### Détails des fonctions
+
+#### 1️⃣ `auto_patch_function()`
+Lit un fichier Python, trouve la fonction cible et remplace uniquement son contenu.  
+- Sauvegarde un backup avant écriture.  
+- Réécrit le fichier avec le nouveau code.  
+- Appelle `auto_repair_file()` pour validation.  
+
+Retourne `True` si la modification réussit, `False` sinon.
+
+#### 2️⃣ `auto_repair_file()`
+Vérifie la syntaxe du fichier (`ast.parse()` ou `py_compile`).  
+- Corrige les erreurs simples (indentation, parenthèses).  
+- Si échec → restaure le backup.  
+- Logue l’opération dans `session.log`.
+
+#### 3️⃣ `session_recovery()`
+Relit `session.log` pour détecter des patchs inachevés.  
+- Si une opération est marquée “pending”, restaure ou relance l’action.  
+
+---
+
+### Sécurité
+- Backup systématique avant modification.  
+- Aucune exécution automatique du code.  
+- Accès limité à `/app/fastapi_app/`.  
+- Rejet des extensions non autorisées.
+
+---
+
+### Intégration complète (IA ↔ moteur)
+1. En mode `review`, l’IA rédige et attend ton accord.  
+2. En cas de validation :  
+   - `/project/write` → `builder_core_v1.4.auto_patch_function()` est appelé.  
+3. Le moteur écrit et vérifie le code.  
+4. En cas d’erreur, `auto_repair_file()` ou `session_recovery()` interviennent.  
+5. Tout est consigné dans `session.log` et `memoire.json`.
+
+---
+
+## ✅ Résultat attendu
+Après la version **v1.4 complète** :
+- Le GPT agit comme un **vrai développeur supervisé**.  
+- Le code Python est modifié proprement, sauvegardé, vérifié et traçable.  
+- L’humain conserve toujours le **dernier mot**.  
+- MiniStudioGPT devient un environnement de co‑développement stable, sûr et intelligent.
+
+---
+
+## 🔜 Prochaine étape : v2.0
+Mise en place du pipeline CI/CD (déploiement automatique et validation continue) basé sur ce socle.

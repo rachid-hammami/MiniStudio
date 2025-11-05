@@ -1,0 +1,6 @@
+{
+  "filepath": "fastapi_app/main.py",
+  "func_name": "root",
+  "new_code": "def root():\n    return '<h1>Hello from MiniStudioGPT v1.4.1 — proposal test 🚀</h1>'",
+  "mode": "review"
+}

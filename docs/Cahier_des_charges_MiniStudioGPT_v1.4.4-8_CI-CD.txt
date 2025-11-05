@@ -1,0 +1,139 @@
+CAHIER DES CHARGES – MINISTUDIOGPT v1.4.4-8
+Intégration Continue (CI/CD) – Validation automatique et pipeline GitHub Actions
+Date : 1er novembre 2025
+Auteur : Code GPT + Rachid Hammami
+Version : v1.4.4-8 (CI/CD Foundation)
+
+--------------------------------------
+🎯 OBJECTIF GLOBAL
+Mettre en place une chaîne d’intégration continue (CI/CD) complète pour MiniStudioGPT.
+Cette étape intervient AVANT le Cortex Layer (v1.5) et constitue le socle de test et de déploiement automatique du projet.
+
+Le pipeline doit :
+1. Exécuter automatiquement les tests unitaires à chaque push sur GitHub.
+2. Générer un rapport JSON stocké dans /memory et /reports.
+3. Valider la stabilité du backend avant toute évolution (Cortex Layer inclus).
+4. Créer les fondations du déploiement futur automatisé (Docker / Cloudflare).
+
+--------------------------------------
+⚙️ PARTIE 1 – ARCHITECTURE CI/CD
+
+Fichier principal : .github/workflows/test_and_deploy.yml
+
+Structure du projet CI/CD :
+MiniStudio/
+├── .github/
+│   └── workflows/
+│       └── test_and_deploy.yml
+├── reports/
+│   └── report.json
+├── memory/
+│   ├── ci_report_YYYYMMDD-HHMMSS.json
+│   └── session.log
+└── builder_core.py (update_ci_status intégré)
+
+--------------------------------------
+⚙️ PARTIE 2 – WORKFLOW GITHUB ACTIONS
+
+Nom du workflow : 🧪 MiniStudio CI/CD
+
+Déclencheurs :
+- push sur main ou develop
+- pull_request sur main
+
+Tâches :
+1. Checkout du dépôt
+2. Installation Python 3.11
+3. Installation des dépendances
+4. Exécution des tests avec pytest
+5. Génération du rapport JSON (reports/report.json)
+6. Copie automatique dans memory/ci_report_*
+7. Archivage de l’artefact sur GitHub Actions
+
+--------------------------------------
+⚙️ PARTIE 3 – INTÉGRATION AU BUILDER
+
+Fonction à ajouter dans builder_core.py :
+
+def update_ci_status(result: str, report_path="reports/report.json"):
+    from datetime import datetime
+    import os, shutil, json
+    memory_dir = "memory"
+    os.makedirs(memory_dir, exist_ok=True)
+    dest = os.path.join(memory_dir, f"ci_report_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json")
+    shutil.copy(report_path, dest)
+    with open(os.path.join(memory_dir, "session.log"), "a", encoding="utf-8") as log:
+        log.write(f"[CI/CD] Test run {datetime.now().isoformat()} -> {result}\n")
+
+--------------------------------------
+⚙️ PARTIE 4 – TESTS VALIDÉS AUTOMATIQUEMENT
+
+Tests exécutés :
+- test_apply_code.py
+- test_apply_code_async.py
+- test_app.py
+- test_collab_flow.py
+
+Résultats attendus :
+- 100 % de réussite
+- Fichiers de logs générés dans memory/
+- Aucun crash réseau / permission / syntaxe
+
+--------------------------------------
+⚙️ PARTIE 5 – SÉCURITÉ ET SECRETS GITHUB
+
+Variables à définir dans GitHub > Settings > Secrets > Actions :
+- MINISTUDIO_KEY : clé d’accès au backend sécurisé
+- CF_TUNNEL_TOKEN : (optionnel) pour test du tunnel Cloudflare
+
+Le workflow ne doit pas exposer ces variables dans les logs.
+
+--------------------------------------
+⚙️ PARTIE 6 – RAPPORTS ET HISTORIQUE
+
+Chaque exécution CI crée :
+- Un rapport JSON dans /reports
+- Une copie dans /memory (avec horodatage)
+- Une entrée de log dans session.log
+- Un artefact téléchargeable via l’onglet Actions de GitHub
+
+Exemple de log :
+[CI/CD] Test run 2025-11-01T18:42:30 -> SUCCESS
+
+--------------------------------------
+⚙️ PARTIE 7 – VALIDATION
+
+Critères de validation :
+1. Tests locaux : pytest 100 %
+2. Actions GitHub : workflow complété sans erreur
+3. Rapport CI stocké dans memory/
+4. Logs conformes à la norme [CI/CD]
+5. Compatible Python 3.11 / Ubuntu-latest
+
+--------------------------------------
+⚙️ PARTIE 8 – TRANSITION VERS v1.5 (CORTEX LAYER)
+
+Une fois le CI/CD opérationnel :
+- Les tests du Cortex Layer (mémoire vectorielle, requêtes /memory/query) seront intégrés au même pipeline.
+- Les versions futures (v1.5.x) hériteront de ce workflow sans duplication.
+- Les rapports CI permettront de mesurer la stabilité du Cortex à chaque évolution.
+
+--------------------------------------
+✅ CONCLUSION
+
+Cette version v1.4.4-8 établit le socle de confiance du projet MiniStudioGPT.
+Le CI/CD garantit la qualité continue, la traçabilité et la sécurité avant l’intégration du Cortex Layer.
+MiniStudio devient ainsi une plateforme prête pour la collaboration multi-agents IA et le déploiement automatisé.
+
+───────────────────────────────────────────────
+🧠 MESSAGE STANDARD POUR LE GPT
+───────────────────────────────────────────────
+Mission : Création du fichier .github/workflows/test_and_deploy.yml
+Cible : GPT personnel (MiniStudioGPT)
+Mode : Lecture seule, génération de code YAML uniquement
+
+Message :
+« Rédige le contenu complet du fichier .github/workflows/test_and_deploy.yml
+en suivant le présent cahier des charges MiniStudioGPT v1.4.4-8 CI/CD.
+Fournis uniquement le code YAML final, sans explications ni commentaire hors code. »
+───────────────────────────────────────────────

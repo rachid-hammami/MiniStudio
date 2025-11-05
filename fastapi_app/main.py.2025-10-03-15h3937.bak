@@ -1,0 +1,331 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import PlainTextResponse
+from pathlib import Path
+import subprocess
+import os
+from datetime import datetime
+import json
+
+WHITELIST_PATH = Path("whitelist.json")
+
+if WHITELIST_PATH.exists():
+    with open(WHITELIST_PATH, "r", encoding="utf-8") as f:
+        try:
+            WHITELIST = json.load(f).get("allowed_files", [])
+        except Exception:
+            WHITELIST = []
+else:
+    WHITELIST = []
+    
+    from fastapi import HTTPException
+
+def check_file_allowed(filename: str):
+    """Vérifie si le fichier est autorisé via whitelist.json"""
+    if filename not in WHITELIST:
+        raise HTTPException(status_code=403, detail=f"Fichier {filename} non autorisé")
+    return True
+
+
+# --- SQLAlchemy ---
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
+
+# Base de données SQLite
+DB_PATH = "memory/studio.db"
+os.makedirs("memory", exist_ok=True)
+DATABASE_URL = f"sqlite:///{DB_PATH}"
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+Base = declarative_base()
+
+
+# Table actions
+class Action(Base):
+    __tablename__ = "actions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    action_type = Column(String(50), nullable=False)
+    details = Column(Text, nullable=True)
+
+
+# Création de la table si elle n’existe pas
+Base.metadata.create_all(bind=engine)
+
+# --- App FastAPI ---
+app = FastAPI(title="MiniStudio", version="0.2")
+
+# Exclusions pour éviter le bruit
+EXCLUDE_DIRS = {".git", "__pycache__", "venv", "node_modules", "memory"}
+BASE_DIR = Path(__file__).resolve().parent
+
+
+# --- Utilitaire pour enregistrer une action ---
+def log_action(action_type: str, details: str):
+    db: Session = SessionLocal()
+    try:
+        entry = Action(action_type=action_type, details=details)
+        db.add(entry)
+        db.commit()
+    finally:
+        db.close()
+
+
+# --- Endpoints ---
+
+@app.get("/list-files")
+def list_files():
+    """Lister les fichiers du projet (hors exclusions)."""
+    files = []
+    for path in BASE_DIR.rglob("*"):
+        if any(part in EXCLUDE_DIRS for part in path.parts):
+            continue
+        if path.is_file():
+            files.append(str(path.relative_to(BASE_DIR)))
+
+    log_action("list-files", f"Found {len(files)} files")
+    return {"files": files}
+
+
+@app.get("/read-file", response_class=PlainTextResponse)
+def read_file(filename: str, max_chars: int = 5000):
+    """Lire un fichier donné, limité en taille."""
+
+    # Vérification whitelist
+    check_file_allowed(filename)
+
+    file_path = BASE_DIR / filename
+    if not file_path.exists() or not file_path.is_file():
+        log_action("read-file", f"Error: file {filename} not found")
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+
+    with file_path.open("r", encoding="utf-8", errors="ignore") as f:
+        content = f.read(max_chars)
+
+    log_action("read-file", f"Read file {filename}")
+    return content
+
+@app.post("/write-file")
+def write_file(filename: str, content: str):
+    """Modifier un fichier autorisé avec sauvegarde automatique."""
+
+    # Vérification whitelist
+    check_file_allowed(filename)
+
+    file_path = BASE_DIR / filename
+    if not file_path.exists() or not file_path.is_file():
+        log_action("write-file", f"Erreur: fichier {filename} introuvable")
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+
+    # Sauvegarde automatique (.bak avec date/heure)
+    timestamp = datetime.now().strftime("%Y-%m-%d-%Hh%M%S")
+    backup_path = file_path.with_suffix(file_path.suffix + f".{timestamp}.bak")
+    backup_path.write_text(
+        file_path.read_text(encoding="utf-8", errors="ignore"),
+        encoding="utf-8"
+    )
+
+    # Écriture du nouveau contenu
+    with file_path.open("w", encoding="utf-8") as f:
+        f.write(content)
+
+    # Journalisation
+    details = json.dumps({
+        "file": filename,
+        "backup": str(backup_path),
+        "timestamp": timestamp
+    })
+    log_action("write-file", details)
+
+    return {
+        "status": "success",
+        "file": filename,
+        "backup": str(backup_path)
+    }
+
+
+@app.get("/search")
+def search(keyword: str):
+    """Rechercher un mot-clé dans les fichiers du projet."""
+    results = []
+    for path in BASE_DIR.rglob("*.py"):
+        if any(part in EXCLUDE_DIRS for part in path.parts):
+            continue
+        try:
+            with path.open("r", encoding="utf-8", errors="ignore") as f:
+                for i, line in enumerate(f, start=1):
+                    if keyword in line:
+                        results.append({
+                            "file": str(path.relative_to(BASE_DIR)),
+                            "line": i,
+                            "content": line.strip()
+                        })
+        except Exception:
+            continue
+
+    log_action("search", f"Searched '{keyword}', found {len(results)} results")
+    return {"results": results}
+
+
+@app.post("/run-tests")
+def run_tests():
+    """Lancer pytest et retourner un rapport JSON clair."""
+    report_file = "report.json"
+    try:
+        # Lancer pytest avec plugin JSON
+        subprocess.run(
+            ["pytest", "--json-report", f"--json-report-file={report_file}"],
+            check=False,
+            cwd=BASE_DIR
+        )
+
+        # Vérifier que le rapport existe
+        if not os.path.exists(report_file):
+            log_action("run-tests", "Erreur: aucun rapport JSON généré")
+            raise HTTPException(status_code=500, detail="No report.json generated")
+
+        # Charger le rapport
+        with open(report_file, "r", encoding="utf-8") as f:
+            report = json.load(f)
+
+        # Résumé
+        summary = {
+            "passed": report.get("summary", {}).get("passed", 0),
+            "failed": report.get("summary", {}).get("failed", 0),
+            "errors": report.get("summary", {}).get("error", 0),
+            "skipped": report.get("summary", {}).get("skipped", 0),
+        }
+
+        # Échecs détaillés
+        failures = []
+        for test in report.get("tests", []):
+            if test.get("outcome") == "failed":
+                failures.append({
+                    "file": test.get("nodeid", "").split("::")[0],
+                    "test": test.get("nodeid", "").split("::")[-1],
+                    "message": test.get("longrepr", ""),
+                })
+
+        result = {
+            "success": summary["failed"] == 0 and summary["errors"] == 0,
+            "summary": summary,
+            "failures": failures,
+        }
+
+        # Sauvegarde en base SQLite
+        log_action("run-tests", json.dumps(result))
+
+        # Nettoyage
+        os.remove(report_file)
+
+        return result
+
+    except Exception as e:
+        log_action("run-tests", f"Erreur: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@app.get("/history")
+def history():
+    """Voir l’historique des actions depuis la base SQLite."""
+    db: Session = SessionLocal()
+    try:
+        actions = db.query(Action).order_by(Action.timestamp.desc()).all()
+        return [
+            {
+                "id": a.id,
+                "timestamp": a.timestamp.isoformat(),
+                "action_type": a.action_type,
+                "details": a.details,
+            }
+            for a in actions
+        ]
+    finally:
+        db.close()
+
+
+@app.get("/list-backups")
+def list_backups(file: str = None):
+    """Lister tous les fichiers .bak disponibles (sauvegardes automatiques). 
+       Optionnel : filtrer par nom de fichier original avec ?file=xxx.py
+    """
+    backups = []
+
+    for path in BASE_DIR.rglob("*.bak"):
+        # Si un filtre est demandé, on vérifie la correspondance
+        if file and not path.name.startswith(file):
+            continue
+
+        backups.append({
+            "filename": str(path.relative_to(BASE_DIR)),  # chemin relatif comme /list-files
+            "original": path.stem,  # nom du fichier sans .bak
+            "size": path.stat().st_size,
+            "modified": datetime.fromtimestamp(path.stat().st_mtime).isoformat()
+        })
+
+    # Journalisation dans SQLite
+    details = json.dumps({"file": file, "count": len(backups)})
+    log_action("list-backups", details)
+
+    return {"backups": backups}
+
+
+@app.post("/restore-backup")
+def restore_backup(backup_file: str):
+    """Restaurer un fichier à partir d'un backup .bak"""
+
+    # Nettoyer le chemin si l'utilisateur met fastapi-app/ devant
+    if backup_file.startswith("fastapi-app/"):
+        backup_file = backup_file.replace("fastapi-app/", "", 1)
+
+    backup_path = BASE_DIR / backup_file
+
+    # Vérifier que le backup existe
+    if not backup_path.exists() or not backup_path.is_file() or not backup_file.endswith(".bak"):
+        log_action("restore-backup", f"Erreur: backup {backup_file} introuvable")
+        raise HTTPException(status_code=404, detail="Backup introuvable")
+
+    # --- Retrouver le fichier original ---
+    # Ex: "main.py.2025-10-03-13h0544.bak" → "main.py"
+    backup_stem = backup_file.replace(".bak", "")
+    parts = backup_stem.split(".")
+    if len(parts) > 2:
+        # Cas avec timestamp (main + extension + date)
+        original_name = ".".join(parts[0:2])  # "main.py"
+    else:
+        original_name = backup_stem
+
+    original_path = BASE_DIR / original_name
+
+    # Vérifier whitelist uniquement sur le vrai fichier
+    check_file_allowed(original_path.name)
+
+    # --- Sauvegarde de sécurité avant restauration ---
+    if original_path.exists():
+        timestamp = datetime.now().strftime("%Y-%m-%d-%Hh%M%S")
+        safety_backup = original_path.with_suffix(original_path.suffix + f".{timestamp}.bak")
+        safety_backup.write_text(
+            original_path.read_text(encoding="utf-8", errors="ignore"),
+            encoding="utf-8"
+        )
+
+    # --- Restauration ---
+    original_path.write_text(
+        backup_path.read_text(encoding="utf-8", errors="ignore"),
+        encoding="utf-8"
+    )
+
+    # Journaliser
+    details = json.dumps({
+        "backup": backup_file,
+        "restored_to": str(original_path),
+    })
+    log_action("restore-backup", details)
+
+    return {
+        "status": "success",
+        "backup_file": backup_file,
+        "restored_to": str(original_path)
+    }

@@ -1,0 +1,6 @@
+{
+  "filepath": "fastapi_app/test_patch_target.py",
+  "func_name": "test_patch",
+  "new_code": "def test_patch():\n    print('✅ Test automatique déclenché via API propose_code_project_propose_post !')\n    return True",
+  "mode": "auto"
+}

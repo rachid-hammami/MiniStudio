@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>MiniStudio Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="dashboard.js"></script>
+</head>
+<body>
+  <header>
+  <h1>MiniStudio Dashboard</h1>
+  <div class="header-actions">
+    <a href="/control" target="_blank" id="controlLink">⚙️ Panneau de contrôle</a>
+    <button id="themeToggle">🌓 Thème</button>
+  </div>
+</header>
+
+  <nav id="controls">
+    <button data-lang="all">Tous</button>
+    <button data-lang="python">Python</button>
+    <button data-lang="javascript">JavaScript</button>
+  </nav>
+  <main>
+    <section>
+      <h2>Suggestions IA <span id="suggestions-status"></span></h2>
+      <div id="suggestions"></div>
+    </section>
+    <section>
+      <h2>Rapports récents <span id="reports-status"></span></h2>
+      <div id="reports"></div>
+    </section>
+    <section>
+      <h2>Fichiers suivis <span id="files-status"></span></h2>
+      <ul id="files"></ul>
+    </section>
+  </main>
+</body>
+</html>

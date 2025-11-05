@@ -1,0 +1,96 @@
+CAHIER DES CHARGES – MISE À JOUR MINISTUDIO V1.2
+=================================================
+
+Objectif :
+-----------
+Étendre le backend FastAPI MiniStudioGPT (v1.1) pour :
+1. Ajouter une route /project/snapshot permettant au GPT de lire toute la mémoire persistante en une requête.
+2. Modifier la logique d’écriture de session.log pour qu’il soit mis à jour sans être écrasé.
+
+--------------------------------------------------
+1. NOUVEL ENDPOINT : /project/snapshot
+--------------------------------------------------
+
+Fichier : /app/fastapi_app/endpoints_project.py
+
+Créer une nouvelle route GET /project/snapshot dans le même APIRouter existant.
+Elle doit :
+
+- Vérifier l’existence des trois fichiers de mémoire :
+    /app/memory/memoire.json
+    /app/memory/session.log
+    /app/memory/project_map.json
+
+- Lire leur contenu :
+    - JSON pour memoire.json et project_map.json
+    - texte brut pour session.log
+
+- Retourner un objet JSON combiné, au format suivant :
+
+{
+  "status": "ok",
+  "timestamp": "<horodatage ISO>",
+  "snapshot": {
+    "memoire": { ... },
+    "session_log": "texte du log",
+    "project_map": { ... }
+  }
+}
+
+- Si un fichier est manquant, utiliser "{}" ou "" par défaut.
+- Utiliser ensure_memory_files() pour garantir leur présence.
+- Aucun paramètre requis.
+- Accessible uniquement via le tunnel Cloudflare (pas d’authentification locale).
+
+--------------------------------------------------
+2. MODIFICATION DE /project/write
+--------------------------------------------------
+
+Toujours dans endpoints_project.py :
+
+Adapter la fonction project_write() pour que le comportement sur session.log soit non destructif.
+
+Règle à appliquer :
+- Si le fichier cible est session.log :
+    → Ouvrir le fichier en mode "append" ("a", encoding="utf-8")
+    → Ajouter le contenu fourni, précédé d’un saut de ligne "\n"
+    → Ne jamais écraser le contenu précédent
+
+Exemple de code à insérer :
+
+if target.name == "session.log":
+    with open(target, "a", encoding="utf-8") as f:
+        f.write("\n" + str(request.content))
+    return {
+        "status": "ok",
+        "path": str(target.relative_to(BASE_PATH)),
+        "updated_at": datetime.now().isoformat(),
+        "mode": "append"
+    }
+
+--------------------------------------------------
+3. VALIDATION À EFFECTUER
+--------------------------------------------------
+
+- Vérifier via Swagger que la route /project/snapshot apparaît bien.
+- Tester depuis le GPT :
+    GET https://ministudio.store/project/snapshot
+  → Doit renvoyer les trois fichiers mémoire combinés.
+
+- Tester l’écriture dans session.log :
+    POST /project/write
+    {
+      "filename": "memory/session.log",
+      "content": "[2025-10-29] Test d’écriture non destructive."
+    }
+
+  → Le texte doit s’ajouter à la suite, sans effacer le contenu existant.
+
+--------------------------------------------------
+4. LIVRABLES
+--------------------------------------------------
+
+- Fichier modifié : fastapi_app/endpoints_project.py
+- Version mise à jour : MiniStudio v1.2
+- Aucune dépendance supplémentaire
+- OpenAPI.json mis à jour automatiquement

@@ -1,0 +1,108 @@
+CAHIER DES CHARGES – MINISTUDIOGPT v1.4.4
+Compatibilité complète GPT / Apply-Code + Robustesse Builder
+Date : 1er novembre 2025
+Auteur : Code GPT + Rachid Hammami
+Version cible : v1.4.4 Stable
+
+--------------------------------------
+🎯 OBJECTIF GLOBAL
+Rendre MiniStudioGPT totalement compatible avec les appels extérieurs GPT via tunnel Cloudflare
+ou domaine ministudio.store, en corrigeant les erreurs d’apply-code rencontrées en v1.4.3.
+
+Priorités :
+1. Tolérance accrue sur les chemins de fichiers.
+2. Création automatique de fonction manquante.
+3. Messages d’erreurs clairs et exploitables.
+4. Journalisation enrichie.
+5. Maintien compatibilité tests v1.4.3.
+
+--------------------------------------
+⚙️ PARTIE 1 – ARCHITECTURE
+Structure inchangée :
+MiniStudio/
+├── builder_core.py
+├── fastapi_app/
+│   ├── main.py
+│   ├── endpoints_project.py
+│   └── test_patch_target.py
+├── memory/
+│   ├── memoire.json
+│   ├── session.log
+│   └── session_local_fallback.log
+├── tests/
+│   ├── test_apply_code.py
+│   ├── test_apply_code_async.py
+│   └── test_collab_flow.py
+└── docker-compose.yml
+
+--------------------------------------
+⚙️ PARTIE 2 – ÉVOLUTIONS TECHNIQUES
+
+1. Assouplissement du contrôle de chemin
+   - Normaliser / ajouter automatiquement './' si absent.
+   - Refuser seulement hors ./fastapi_app/.
+   - Journaliser le refus clair.
+
+2. Création automatique de fonction manquante
+   - Ajouter le code à la fin du fichier si fonction absente.
+   - Vérifier syntaxe avec py_compile.
+   - Restaurer backup en cas d’erreur.
+
+3. Gestion d’erreurs enrichie /project/apply-code
+   - 400 : chemin non autorisé.
+   - 404 : fichier introuvable.
+   - 409 : fonction absente.
+   - 500 : erreur interne.
+   - Toujours renvoyer JSON clair avec func_name et server_version.
+
+4. Compatibilité GPT
+   - Accepter chemins avec ou sans './'.
+   - Tolérer retours de ligne Unix/Windows.
+   - Réponses JSON cohérentes.
+   - Champ server_version=v1.4.4 dans chaque réponse.
+
+5. Journalisation enrichie
+   - Préfixer logs par [MiniStudioGPT v1.4.4].
+   - Ajouter session_audit.log avec événements critiques.
+
+--------------------------------------
+🧪 PARTIE 3 – TESTS
+
+Tests unitaires : test_apply_code.py, test_apply_code_async.py, test_collab_flow.py
+Tests GPT distants : appel via https://ministudio.store
+Résultat attendu : 200 ou 409 JSON interprétable, aucun timeout.
+
+--------------------------------------
+🔐 PARTIE 4 – SÉCURITÉ
+- Refus fichiers sensibles (.env, .git, docker-compose, secret, token, system32).
+- Fichiers modifiables uniquement sous ./fastapi_app/.
+- Journalisation de tout refus.
+
+--------------------------------------
+🧱 PARTIE 5 – LIVRABLES
+builder_core.py -> mis à jour
+endpoints_project.py -> messages enrichis
+test_apply_code.py -> mise à jour création fonction
+session_audit.log -> nouveau
+Session_Report_v1.4.4.md -> nouveau
+
+--------------------------------------
+🧭 PARTIE 6 – VALIDATION
+Critères :
+1. Apply-code local : pytest 100 %.
+2. Apply-code distant : réponse claire.
+3. Création fonction absente : OK.
+4. Rollback valide : OK.
+5. Logs : horodatés.
+6. Docker/Cloudflare : stable.
+
+--------------------------------------
+🧩 PARTIE 7 – PRÉPARATION v1.5
+- Ajout Cortex Layer (analyse vectorielle du code).
+- Base cortex.db pour embeddings des fonctions.
+
+--------------------------------------
+✅ CONCLUSION
+MiniStudioGPT v1.4.4 = version tolérante et intelligente.
+Acceptation des chemins variés, création automatique des fonctions, messages explicites,
+collaboration IA ↔ API fluide et robuste.

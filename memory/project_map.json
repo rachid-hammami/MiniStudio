@@ -1,0 +1,83 @@
+{
+  "last_update": "2025-11-01T14:15:00",
+  "updated_by": "MiniStudioGPT v1.4.4",
+  "project_root": "C:/Users/Dell/Documents/Developpement/GitHub/MiniStudio/",
+  "summary": {
+    "total_files": 160,
+    "languages": {
+      "python": 70,
+      "typescript_javascript": 35,
+      "markdown_txt": 25,
+      "json_yaml": 20
+    },
+    "main_directories": [
+      "fastapi_app",
+      "frontend",
+      "memory",
+      "docs",
+      "save",
+      "tests"
+    ]
+  },
+  "structure": {
+    "fastapi_app": [
+      "main.py",
+      "endpoints_project.py",
+      "builder_core.py",
+      "orchestrator.py",
+      "system_orchestrator.py",
+      "control_panel.py",
+      "ai_engine.py",
+      "analyzer_engine.py",
+      "doc_engine.py",
+      "database.py",
+      "utils/log_validation.py",
+      "utils/logging_utils.py",
+      "static/control.html",
+      "static/control.js",
+      "static/dashboard.js",
+      "static/index.html",
+      "static/style.css",
+      "test_apply_target.py",
+      "test_apply_target_async.py",
+      "test_patch_target.py"
+    ],
+    "memory": [
+      "memoire.json",
+      "project_map.json",
+      "studio.db",
+      "backups/",
+      "drafts/"
+    ],
+    "docs": [
+      "Cahier_des_charges_MiniStudioGPT_v1.4.4.txt",
+      "MiniStudioGPT_Session_Report_v1.4.3.md",
+      "travaux/",
+      "Cahier_des_charges_MiniStudioGPT_v1.3.txt"
+    ],
+    "frontend": [
+      "src/",
+      "public/",
+      "vite.config.ts",
+      "tailwind.config.js",
+      "package.json"
+    ],
+    "tests": [
+      "test_apply_code.py",
+      "test_apply_code_async.py",
+      "test_builder_core.py",
+      "test_collab_flow.py",
+      "test_repair.py",
+      "test_recovery.py"
+    ],
+    "save": [
+      "builder_core.py",
+      "endpoints_project.py",
+      "main.py",
+      "secure_file_endpoints.py",
+      "docker-compose.yml",
+      "Dockerfile"
+    ]
+  },
+  "note": "Carte du projet mise à jour automatiquement à partir du fichier project_structure_info.txt (analyse complète et fusion non destructive)."
+}

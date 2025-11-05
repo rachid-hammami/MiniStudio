@@ -1,0 +1,45 @@
+### Cahier des charges – Mémoire persistante de MiniStudioGPT
+
+#### 1. Objectif général
+Permettre à MiniStudioGPT de conserver, relire et mettre à jour un ensemble d’informations entre les sessions de travail, afin d’assurer une continuité logique du projet sans dépendre du chat temporaire.
+
+#### 2. Architecture générale
+La mémoire est structurée en trois niveaux complémentaires :
+
+| Type de mémoire | Fichier associé | Contenu | Durée |
+|------------------|-----------------|----------|--------|
+| Mémoire longue | memoire.json | Données stables et réutilisables (règles, contexte, décisions, états permanents). | Permanente |
+| Mémoire de session | session.log | Historique court de la dernière session (résumé des échanges, tâches récentes). | Volatile |
+| Carte du projet | project_map.json | Arborescence logique du projet, liens entre fichiers, rôles et dépendances. | Mise à jour à la demande |
+
+#### 3. Fonctionnement prévu
+1. Lecture au démarrage
+   - Lire les trois fichiers du dossier /memory/.
+   - Fusionner les données pour reconstruire le contexte courant.
+   - Afficher un résumé synthétique.
+2. Écriture pendant la session
+   - Enregistrer dans session.log les actions réalisées.
+   - Enregistrer dans memoire.json les connaissances durables.
+3. Sauvegarde à la fermeture
+   - Mettre à jour les trois fichiers via /files/write.
+4. Mises à jour automatiques
+   - Créer les fichiers manquants avec des modèles vides.
+   - Régénérer project_map.json via /generate_tree si nécessaire.
+
+#### 4. Bonnes pratiques
+- Ne pas modifier manuellement memoire.json sans sauvegarde.
+- Toujours dater les entrées dans session.log.
+- Documenter les évolutions de structure dans ce cahier.
+
+#### 5. Exemple de cycle complet
+1. Démarrage → lecture /memory/
+2. Reprise du dernier état
+3. Travail sur projet
+4. Fin de session → mise à jour automatique
+5. Session suivante → continuité restaurée
+
+#### 6. Évolution future
+Une version ultérieure intégrera :
+- des sauvegardes incrémentales,
+- un nettoyage automatisé,
+- la synchronisation optionnelle avec un cloud local (Nextcloud).

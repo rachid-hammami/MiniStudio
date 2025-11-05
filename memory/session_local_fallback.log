@@ -1,0 +1,57 @@
+[2025-10-30T16:52:39] Backup créé pour ./fastapi_app/test_patch_target.py
+[2025-10-30T16:52:54] ✅ Validation syntaxique réussie : ./fastapi_app/test_patch_target.py.tmp
+[2025-10-30T16:53:10] ✅ Fonction hello_world mise à jour dans ./fastapi_app/test_patch_target.py
+[2025-10-30T17:01:06] Backup créé pour ./fastapi_app/test_patch_target.py
+[2025-10-30T17:01:21] ✅ Validation syntaxique réussie : ./fastapi_app/test_patch_target.py.tmp
+[2025-10-30T17:01:36] ✅ Fonction hello_world mise à jour dans ./fastapi_app/test_patch_target.py
+[2025-10-30T19:32:19] Refus de modification : fastapi_app/test_patch_target.py hors zone autorisée
+[2025-10-30T19:32:34] ✅ Validation syntaxique réussie : fastapi_app/test_patch_target.py
+[2025-10-30T19:32:49] ♻️ Session recovery complétée
+[2025-10-30T20:12:57] Refus de modification : fastapi_app/test_patch_target.py hors zone autorisée
+[2025-10-30T20:13:12] ✅ Validation syntaxique réussie : fastapi_app/test_patch_target.py
+[2025-10-30T20:13:27] ♻️ Session recovery complétée
+[2025-10-30T20:51:04] Refus de modification : fastapi_app/test_patch_target.py hors zone autorisée
+[2025-10-30T20:51:19] ✅ Validation syntaxique réussie : fastapi_app/test_patch_target.py
+[2025-10-30T20:51:34] ♻️ Session recovery complétée
+[2025-10-31T10:36:19] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-10-31T10:36:34] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py.tmp
+[2025-10-31T10:36:49] ✅ Fonction dummy mise à jour dans ./fastapi_app/test_apply_target.py
+[2025-10-31T10:41:53] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-10-31T10:42:08] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py.tmp
+[2025-10-31T10:42:23] ✅ Fonction dummy mise à jour dans ./fastapi_app/test_apply_target.py
+[2025-10-31T17:35:35] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-10-31T17:35:51] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py.tmp
+[2025-10-31T17:36:06] ✅ Fonction dummy mise à jour dans ./fastapi_app/test_apply_target.py
+[2025-10-31T18:36:44] Refus de modification : fastapi_app/test_apply_write.py hors zone autorisée
+[2025-10-31T18:37:08] ✅ Validation syntaxique réussie : fastapi_app/test_apply_write.py
+[2025-10-31T18:37:24] ♻️ Session recovery complétée
+[2025-10-31T19:26:30] Refus de modification : app/fastapi_app/test_apply_allowed.py hors zone autorisée
+[2025-10-31T19:26:45] ✅ Validation syntaxique réussie : app/fastapi_app/test_apply_allowed.py
+[2025-10-31T19:27:00] ♻️ Session recovery complétée
+[2025-10-31T19:37:58] Refus de modification : fastapi_app/test_target_allowed.py hors zone autorisée
+[2025-10-31T19:38:14] ✅ Validation syntaxique réussie : fastapi_app/test_target_allowed.py
+[2025-10-31T19:38:29] ♻️ Session recovery complétée
+[2025-10-31T20:10:14] Refus de modification : fastapi_app/test_target_allowed.py hors zone autorisée
+[2025-10-31T20:10:29] ✅ Validation syntaxique réussie : fastapi_app/test_target_allowed.py
+[2025-10-31T20:10:45] ♻️ Session recovery complétée
+[2025-10-31T20:18:53] Refus de modification : fastapi_app/test_app.py hors zone autorisée
+[2025-10-31T20:19:09] ✅ Validation syntaxique réussie : fastapi_app/test_app.py
+[2025-10-31T20:19:24] ♻️ Session recovery complétée
+[2025-11-01T09:34:49] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-11-01T09:35:04] Fonction hello_apply_test introuvable dans ./fastapi_app/test_apply_target.py
+[2025-11-01T09:36:38] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-11-01T09:36:53] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py.tmp
+[2025-11-01T09:37:08] ✅ Fonction hello_apply_test mise à jour dans ./fastapi_app/test_apply_target.py
+[2025-11-03T17:15:18] Backup créé pour ./fastapi_app/test_patch_target.py
+[2025-11-03T17:15:36] Fonction hello_world_v21 introuvable dans ./fastapi_app/test_patch_target.py
+[2025-11-03T17:35:34] Backup créé pour ./fastapi_app/main.py
+[2025-11-03T17:35:49] Fonction get_notes introuvable dans ./fastapi_app/main.py
+[2025-11-04T20:29:39] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-11-04T20:30:05] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py.tmp
+[2025-11-04T20:30:20] ✅ Fonction dummy mise à jour dans ./fastapi_app/test_apply_target.py
+[2025-11-04T20:30:36] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-11-04T20:30:51] Fonction brand_new_feature introuvable dans ./fastapi_app/test_apply_target.py
+[2025-11-04T20:31:08] Backup créé pour ./fastapi_app/test_apply_target.py
+[2025-11-04T20:31:23] Fonction bad_func introuvable dans ./fastapi_app/test_apply_target.py
+[2025-11-04T20:31:38] ✅ Validation syntaxique réussie : ./fastapi_app/test_apply_target.py
+[2025-11-04T20:31:53] ♻️ Session recovery complétée

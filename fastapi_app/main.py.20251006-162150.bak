@@ -1,0 +1,174 @@
+from fastapi_app import ai_engine
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import PlainTextResponse
+from pathlib import Path
+import subprocess
+import os
+from datetime import datetime
+import json
+import fnmatch
+
+# --- Import explicite du moteur d’analyse ---
+from .analyzer_engine import AnalyzerOrchestrator
+
+# --- Import du routeur d’orchestration ---
+from .orchestrator import router as orchestrator_router
+
+
+# --- Gestion de la whitelist ---
+WHITELIST_PATH = Path("whitelist.json")
+
+if WHITELIST_PATH.exists():
+    with open(WHITELIST_PATH, "r", encoding="utf-8") as f:
+        try:
+            WHITELIST = json.load(f).get("allowed_files", [])
+        except Exception:
+            WHITELIST = []
+else:
+    WHITELIST = []
+
+
+def check_file_allowed(filename: str):
+    """Vérifie si le fichier est autorisé via whitelist.json."""
+    normalized = str(Path(filename).as_posix())
+    file_name = Path(filename).name
+    for pattern in WHITELIST:
+        if fnmatch.fnmatch(normalized, pattern) or fnmatch.fnmatch(file_name, pattern):
+            return True
+    raise HTTPException(status_code=403, detail=f"Fichier {filename} non autorisé")
+
+
+# --- SQLAlchemy ---
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
+
+DB_PATH = "memory/studio.db"
+os.makedirs("memory", exist_ok=True)
+DATABASE_URL = f"sqlite:///{DB_PATH}"
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+Base = declarative_base()
+
+
+class Action(Base):
+    __tablename__ = "actions"
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    action_type = Column(String(50), nullable=False)
+    details = Column(Text, nullable=True)
+
+
+Base.metadata.create_all(bind=engine)
+
+
+# --- Initialisation de l’application FastAPI ---
+app = FastAPI(title="MiniStudio", version="0.2")
+app.include_router(ai_engine.router)
+
+EXCLUDE_DIRS = {".git", "__pycache__", "venv", "node_modules", "memory"}
+BASE_DIR = Path(__file__).resolve().parent
+
+
+def log_action(action_type: str, details: str):
+    db: Session = SessionLocal()
+    try:
+        entry = Action(action_type=action_type, details=details)
+        db.add(entry)
+        db.commit()
+    finally:
+        db.close()
+
+
+# --- Endpoints principaux ---
+
+@app.get("/list-files")
+def list_files():
+    files = []
+    for path in BASE_DIR.rglob("*"):
+        if any(part in EXCLUDE_DIRS for part in path.parts):
+            continue
+        if path.is_file():
+            files.append(str(path.relative_to(BASE_DIR)))
+    log_action("list-files", f"Found {len(files)} files")
+    return {"files": files}
+
+
+@app.get("/read-file", response_class=PlainTextResponse)
+def read_file(filename: str, max_chars: int = 5000):
+    check_file_allowed(filename)
+    file_path = BASE_DIR / filename
+    if not file_path.exists() or not file_path.is_file():
+        log_action("read-file", f"Error: file {filename} not found")
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+    with file_path.open("r", encoding="utf-8", errors="ignore") as f:
+        content = f.read(max_chars)
+    log_action("read-file", f"Read file {filename}")
+    return content
+
+
+@app.post("/write-file")
+def write_file(filename: str, content: str):
+    check_file_allowed(filename)
+    file_path = BASE_DIR / filename
+    if not file_path.exists() or not file_path.is_file():
+        log_action("write-file", f"Erreur: fichier {filename} introuvable")
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+
+    timestamp = datetime.now().strftime("%Y-%m-%d-%Hh%M%S")
+    backup_path = file_path.with_suffix(file_path.suffix + f".{timestamp}.bak")
+    backup_path.write_text(file_path.read_text(encoding="utf-8", errors="ignore"), encoding="utf-8")
+    with file_path.open("w", encoding="utf-8") as f:
+        f.write(content)
+    details = json.dumps({"file": filename, "backup": str(backup_path), "timestamp": timestamp})
+    log_action("write-file", details)
+    return {"status": "success", "file": filename, "backup": str(backup_path)}
+
+
+@app.post("/run-tests")
+def run_tests():
+    report_file = "report.json"
+    try:
+        subprocess.run(["pytest", "--json-report", f"--json-report-file={report_file}"], check=False, cwd=BASE_DIR)
+        if not os.path.exists(report_file):
+            log_action("run-tests", "Erreur: aucun rapport JSON généré")
+            raise HTTPException(status_code=500, detail="No report.json generated")
+        with open(report_file, "r", encoding="utf-8") as f:
+            report = json.load(f)
+        summary = {
+            "passed": report.get("summary", {}).get("passed", 0),
+            "failed": report.get("summary", {}).get("failed", 0),
+            "errors": report.get("summary", {}).get("error", 0),
+            "skipped": report.get("summary", {}).get("skipped", 0),
+        }
+        failures = []
+        for test in report.get("tests", []):
+            if test.get("outcome") == "failed":
+                failures.append({
+                    "file": test.get("nodeid", "").split("::")[0],
+                    "test": test.get("nodeid", "").split("::")[-1],
+                    "message": test.get("longrepr", ""),
+                })
+        result = {"success": summary["failed"] == 0 and summary["errors"] == 0, "summary": summary, "failures": failures}
+        log_action("run-tests", json.dumps(result))
+        os.remove(report_file)
+        return result
+    except Exception as e:
+        log_action("run-tests", f"Erreur: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/history")
+def history():
+    db: Session = SessionLocal()
+    try:
+        actions = db.query(Action).order_by(Action.timestamp.desc()).all()
+        return [{"id": a.id, "timestamp": a.timestamp.isoformat(), "action_type": a.action_type, "details": a.details} for a in actions]
+    finally:
+        db.close()
+
+
+# --- Intégration de l’orchestrateur ---
+app.include_router(orchestrator_router)
+
+print("VS Code est opérationnel ✅")

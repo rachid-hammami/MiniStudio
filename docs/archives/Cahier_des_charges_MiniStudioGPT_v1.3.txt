@@ -1,0 +1,149 @@
+CAHIER DES CHARGES – MISE À JOUR MINISTUDIO V1.3
+=================================================
+
+Objectif :
+-----------
+Étendre MiniStudioGPT (backend + Builder) pour améliorer :
+1. La journalisation automatique des étapes importantes.
+2. La gestion intelligente de la mémoire (répartition entre session.log, memoire.json et project_map.json).
+3. La compatibilité du schéma OpenAPI avec les limites de taille du Builder.
+
+--------------------------------------------------
+1. JOURNALISATION AUTOMATIQUE (Builder)
+--------------------------------------------------
+
+But :
+-----
+Permettre à MiniStudioGPT (le Builder) de reconnaître automatiquement les étapes importantes et de les enregistrer dans le bon fichier mémoire.
+
+Règles :
+--------
+| Type d’événement | Action à effectuer | Fichier cible | Mode d’écriture |
+|------------------|--------------------|----------------|-----------------|
+| Démarrage / snapshot chargé | Ajouter `[Session démarrée]` | session.log | append |
+| Création ou modification d’un fichier projet | Ajouter `[Fichier X modifié]` | session.log | append |
+| Ajout d’une connaissance durable (règle, décision, lien logique) | Fusionner dans `memoire.json` | memoire.json | fusion |
+| Modification de structure du projet (ajout, suppression, refactorisation) | Mettre à jour la clé correspondante | project_map.json | fusion |
+| Fin de session | Ajouter `[Fin de session – sauvegarde complète]` | session.log | append |
+
+Implémentation :
+----------------
+Côté Builder, ajouter une fonction `log_event(event_text)` qui :
+- Formate un message daté.
+- Envoie un `POST /project/write` avec `filename=memory/session.log` et `content` = message.
+- Est appelée automatiquement après chaque opération importante (write, snapshot, update, save).
+
+Exemple :
+---------
+```python
+def log_event(event_text):
+    payload = {
+        "filename": "memory/session.log",
+        "content": f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {event_text}"
+    }
+    requests.post("https://ministudio.store/project/write", json=payload)
+
+log_event("Mémoire mise à jour (memoire.json)")
+```
+
+--------------------------------------------------
+2. OPTIMISATION DU SCHÉMA OPENAPI
+--------------------------------------------------
+
+But :
+-----
+Contourner la limite de taille du Builder lors de l’import du schéma `/openapi.json`.
+
+Solution :
+-----------
+Créer une nouvelle route compacte :
+> **GET /openapi_compact.json**
+
+Fonction :
+-----------
+- Génère le schéma OpenAPI de l’application.
+- Supprime les champs lourds (`description`, `summary`, `examples`).
+- Peut filtrer par tags (`?tags=MiniStudioGPT%20Project`).
+- Option de minification JSON pour réduire la taille de 50 à 70 %.
+
+Code à intégrer dans `main.py` :
+--------------------------------
+```python
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from fastapi.openapi.utils import get_openapi
+import json
+
+def generate_compact_openapi(app, keep_tags: list[str] | None = None, remove_docs=True):
+    schema = get_openapi(title=app.title, version=app.version, description=app.description, routes=app.routes)
+
+    if keep_tags:
+        paths = {}
+        for path, methods in schema.get("paths", {}).items():
+            new_methods = {}
+            for method, info in methods.items():
+                tags = info.get("tags", [])
+                if any(t in keep_tags for t in tags):
+                    new_methods[method] = info
+            if new_methods:
+                paths[path] = new_methods
+        schema["paths"] = paths
+
+    if remove_docs:
+        def prune(o):
+            if isinstance(o, dict):
+                o.pop("description", None)
+                o.pop("summary", None)
+                o.pop("examples", None)
+                for v in o.values():
+                    prune(v)
+            elif isinstance(o, list):
+                for e in o:
+                    prune(e)
+        prune(schema)
+
+    return schema
+
+@app.get("/openapi_compact.json", include_in_schema=False)
+async def openapi_compact(request: Request, tags: str | None = None, minify: bool = True):
+    keep = None
+    if tags:
+        keep = [t.strip() for t in tags.split(",") if t.strip()]
+    schema = generate_compact_openapi(app, keep_tags=keep, remove_docs=True)
+    if minify:
+        body = json.dumps(schema, separators=(",", ":"), ensure_ascii=False)
+        return JSONResponse(content=json.loads(body))
+    return JSONResponse(content=schema)
+```
+
+Exemples d’utilisation :
+------------------------
+- Schéma compact complet :  
+  `https://ministudio.store/openapi_compact.json`
+- Schéma compact filtré (par tag) :  
+  `https://ministudio.store/openapi_compact.json?tags=MiniStudioGPT%20Project`
+
+Avantages :
+-----------
+✅ Taille réduite du schéma → compatible avec le Builder  
+✅ Aucune perte de fonctionnalité  
+✅ Rétrocompatibilité complète avec `/openapi.json`
+
+--------------------------------------------------
+3. VALIDATION ET TESTS
+--------------------------------------------------
+
+- Vérifier que `/openapi_compact.json` fonctionne et se charge dans le Builder sans erreur.
+- Vérifier que les événements majeurs sont automatiquement consignés dans `session.log`.
+- Vérifier que les écritures mémoire restent non destructives (`memoire.json` fusion, `session.log` append).
+- Vérifier que le snapshot reste cohérent après plusieurs cycles.
+
+--------------------------------------------------
+4. LIVRABLES
+--------------------------------------------------
+
+- `fastapi_app/main.py` : ajout de la route `/openapi_compact.json`
+- `fastapi_app/endpoints_project.py` : inchangé
+- `MiniStudioGPT Builder` : ajout de la fonction `log_event()`
+- Version cible : **MiniStudio v1.3**
+- Date prévue : Novembre 2025

@@ -1,0 +1,106 @@
+CAHIER DES CHARGES – MINISTUDIOGPT v1.4.2 FINAL
+Lecture étendue + Apply Code intégré
+
+OBJECTIF GLOBAL
+Finaliser la version 1.4.2 de MiniStudioGPT en activant :
+
+la lecture complète du projet réel (au-delà de /memory)
+
+la route /apply-code capable d’écrire ou modifier du code Python via le moteur builder_core
+
+LECTURE ÉTENDUE (TOUS LES FICHIERS DU PROJET)
+Contexte : la version précédente limitait la lecture au dossier /memory.
+Désormais, MiniStudioGPT doit pouvoir lire n’importe quel fichier texte ou code du projet réel à partir de la racine /app.
+
+Implémentation (dans endpoints_project.py, route /project/read) :
+from pathlib import Path
+from fastapi import HTTPException
+BASE_DIR = Path(file).resolve().parent.parent
+ALLOWED_EXT = .py .json .txt .md .yml .yaml
+FORBIDDEN = .env docker-compose .db secret token apikey
+@app.post("/project/read")
+def project_read(req: ProjectFileRequest):
+target = (BASE_DIR / req.filename).resolve()
+si BASE_DIR n’est pas dans target.parents et target ≠ BASE_DIR : erreur 403
+si un mot interdit est présent dans target.name.lower() : erreur 403
+si le fichier n’existe pas : erreur 404
+si son extension n’est pas dans ALLOWED_EXT : erreur 400
+sinon lire le contenu texte et le renvoyer.
+
+Résultat : MiniStudioGPT peut lire main.py, builder_core.py, endpoints_project.py, README.md, etc.
+Les fichiers .env, docker-compose.yml, .db ou secrets sont refusés.
+
+NOUVELLE ROUTE /project/apply-code
+Objectif : permettre d’écrire, modifier ou remplacer du code Python en s’appuyant sur builder_core.py.
+Elle complète /project/apply (écriture texte) en ciblant les fichiers .py.
+
+Déclaration OpenAPI à ajouter :
+Route POST /project/apply-code
+Résumé : applique une modification Python via builder_core
+Description : analyse, modifie ou crée une fonction dans un fichier Python à l’aide du moteur builder_core
+Paramètres requis : filename et content
+Réponses possibles : 200 succès, 404 fichier introuvable, 422 erreur de validation
+
+Implémentation (dans endpoints_project.py) :
+Importer APIRouter et HTTPException
+Importer auto_patch_function depuis fastapi_app.builder_core
+Importer ProjectWriteRequest depuis fastapi_app.models
+Créer la fonction project_apply_code(req):
+
+Récupère filename et content
+
+Essaie d’appeler auto_patch_function(filename, content)
+
+Retourne un message de succès ou une erreur HTTP correspondante.
+
+Exemple d’usage :
+Demande utilisateur : « Ajoute une fonction analyze_project() dans fastapi_app/main.py »
+MiniStudioGPT prépare le code, l’envoie à /apply-code, puis obtient :
+status success, result Function analyze_project added.
+
+RÔLE DU FICHIER builder_core.py
+Le moteur auto_patch_function doit :
+
+détecter si la fonction existe déjà
+
+la remplacer si elle existe
+
+sinon l’ajouter à la fin du fichier
+
+sauvegarder le fichier modifié
+
+Pseudo-code :
+ouvrir le fichier cible
+chercher le nom de fonction
+si elle existe remplacer le bloc correspondant
+sinon ajouter le code à la fin
+sauvegarder le fichier et renvoyer un message de succès.
+
+SÉCURITÉ ET COMPATIBILITÉ
+Écriture fichiers .py : oui via apply-code
+Lecture fichiers projet : oui sauf sensibles
+Écriture fichiers sensibles : non
+Compatibilité Cloudflare : oui
+Schéma Builder : compatible v1.4.x
+Données mémoire : inchangées
+
+STRUCTURE FINALE DU PROJET
+fastapi_app/
+main.py
+endpoints_project.py (route apply-code)
+builder_core.py (fonction auto_patch_function)
+models.py
+memory/
+memoire.json
+session.log
+project_map.json
+
+RÉSULTAT ATTENDU
+Lecture complète projet (/project/read) OK
+Protection fichiers sensibles OK
+Route /apply-code active OK
+Écriture sécurisée dans fichiers Python OK
+Intégration builder_core OK
+Compatibilité totale v1.4.2 OK
+
+FIN DU DOCUMENT

@@ -1,0 +1,8 @@
+def dummy():
+    print("✅ Function patched by MiniStudioGPT v1.4.3")
+    return "patched version"
+
+
+def hello_apply_test():
+    print("✅ Route /apply-code fonctionne correctement (test réussi)")
+    return "ok"
