@@ -105,3 +105,23 @@ Voir :
 ---
 
 🧠 _MiniStudioGPT – CI/CD fiable, automatisée et traçable._
+
+
+---
+
+## 📜 Historique des versions
+
+| Version | Date | Description |
+|----------|------|--------------|
+| 🧱 **v1.4.5** | Novembre 2025 | CI/CD strict, vérifications Black & Flake8 bloquantes, build React intégré |
+| 🚀 **v1.4.4-8** | Octobre 2025 | CI/CD tolérant, première intégration GitHub Actions |
+| 🧠 **v1.4.3** | Septembre 2025 | Ajout du système d’audit de session et logs mémoire |
+| ⚙️ **v1.4.2** | Août 2025 | Refonte AI Core et analyseur amélioré |
+| 🧩 **v1.4.1** | Juillet 2025 | Migration complète vers FastAPI |
+| 🚧 **v1.4.0** | Juin 2025 | Initialisation du projet MiniStudioGPT |
+
+➡️ Voir le changelog complet : [`CHANGELOG_MiniStudio_v1.4.0-1.4.5.md`](CHANGELOG_MiniStudio_v1.4.0-1.4.5.md)
+
+---
+
+_Projet maintenu par **Rachid Hammami** – CI/CD by MiniStudioGPT Cortex._
