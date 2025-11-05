@@ -1,8 +1,8 @@
-
 import sqlite3
 import json
 from datetime import datetime
 from pathlib import Path
+
 
 class AnalyzerOrchestrator:
     """
@@ -24,7 +24,8 @@ class AnalyzerOrchestrator:
         """Crée la base et les tables si elles n'existent pas."""
         conn = self._connect()
         cur = conn.cursor()
-        cur.execute("""
+        cur.execute(
+            """
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT,
@@ -33,8 +34,10 @@ class AnalyzerOrchestrator:
             user TEXT,
             status TEXT
         );
-        """)
-        cur.execute("""
+        """
+        )
+        cur.execute(
+            """
         CREATE TABLE IF NOT EXISTS reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             file TEXT,
@@ -42,15 +45,18 @@ class AnalyzerOrchestrator:
             test_results TEXT,
             created_at TEXT
         );
-        """)
-        cur.execute("""
+        """
+        )
+        cur.execute(
+            """
         CREATE TABLE IF NOT EXISTS backups (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             original_file TEXT,
             backup_file TEXT,
             timestamp TEXT
         );
-        """)
+        """
+        )
         conn.commit()
         conn.close()
 
@@ -60,8 +66,12 @@ class AnalyzerOrchestrator:
             conn = self._connect()
             cur = conn.cursor()
             logs = cur.execute("SELECT * FROM logs ORDER BY timestamp DESC").fetchall()
-            reports = cur.execute("SELECT * FROM reports ORDER BY created_at DESC").fetchall()
-            backups = cur.execute("SELECT * FROM backups ORDER BY timestamp DESC").fetchall()
+            reports = cur.execute(
+                "SELECT * FROM reports ORDER BY created_at DESC"
+            ).fetchall()
+            backups = cur.execute(
+                "SELECT * FROM backups ORDER BY timestamp DESC"
+            ).fetchall()
             conn.close()
             return {"logs": logs, "reports": reports, "backups": backups}
         except Exception as e:
@@ -76,22 +86,26 @@ class AnalyzerOrchestrator:
         for log in data.get("logs", []):
             log_id, timestamp, action, filename, user, status = log
             if status and ("error" in status.lower() or "fail" in status.lower()):
-                signals.append({
-                    "type": "error_detected",
-                    "file": filename,
-                    "message": f"Erreur détectée ({status})",
-                    "timestamp": timestamp
-                })
+                signals.append(
+                    {
+                        "type": "error_detected",
+                        "file": filename,
+                        "message": f"Erreur détectée ({status})",
+                        "timestamp": timestamp,
+                    }
+                )
 
         for rep in data.get("reports", []):
             _, file, analysis, test_results, created_at = rep
             if test_results and "failed" in test_results.lower():
-                signals.append({
-                    "type": "test_failure",
-                    "file": file,
-                    "message": "Échec détecté dans les tests",
-                    "timestamp": created_at
-                })
+                signals.append(
+                    {
+                        "type": "test_failure",
+                        "file": file,
+                        "message": "Échec détecté dans les tests",
+                        "timestamp": created_at,
+                    }
+                )
         return signals
 
     def consolidate_reports(self, data: dict, signals: list) -> dict:
@@ -100,22 +114,25 @@ class AnalyzerOrchestrator:
             "total_logs": len(data.get("logs", [])),
             "total_reports": len(data.get("reports", [])),
             "total_backups": len(data.get("backups", [])),
-            "total_signals": len(signals)
+            "total_signals": len(signals),
         }
 
         report = {
             "timestamp": datetime.now().isoformat(),
             "summary": summary,
-            "signals": signals
+            "signals": signals,
         }
 
         try:
             conn = self._connect()
             cur = conn.cursor()
-            cur.execute("""
+            cur.execute(
+                """
                 INSERT INTO reports (file, analysis, test_results, created_at)
                 VALUES (?, ?, ?, ?)
-            """, ("__consolidated__", json.dumps(report), None, report["timestamp"]))
+            """,
+                ("__consolidated__", json.dumps(report), None, report["timestamp"]),
+            )
             conn.commit()
             conn.close()
         except Exception as e:

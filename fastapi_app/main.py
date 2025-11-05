@@ -35,7 +35,9 @@ def generate_compact_openapi(app, keep_tags: list[str] | None = None, remove_doc
 
     # ✅ Ajout du serveur par défaut si absent
     if "servers" not in schema or not schema["servers"]:
-        schema["servers"] = [{"url": "https://ministudio.store", "description": "Instance Cloudflare"}]
+        schema["servers"] = [
+            {"url": "https://ministudio.store", "description": "Instance Cloudflare"}
+        ]
 
     # 🔹 Filtrage facultatif des tags
     if keep_tags:
@@ -52,6 +54,7 @@ def generate_compact_openapi(app, keep_tags: list[str] | None = None, remove_doc
 
     # 🔹 Suppression de certains champs pour réduire la taille du schéma
     if remove_docs:
+
         def prune(obj):
             if isinstance(obj, dict):
                 obj.pop("summary", None)
@@ -62,6 +65,7 @@ def generate_compact_openapi(app, keep_tags: list[str] | None = None, remove_doc
             elif isinstance(obj, list):
                 for e in obj:
                     prune(e)
+
         prune(schema)
 
         # ✅ Correction : Ajout automatique d'une description si manquante dans les réponses
@@ -87,13 +91,11 @@ def generate_compact_openapi(app, keep_tags: list[str] | None = None, remove_doc
                                         "filename": {"type": "string"},
                                         "content": {"type": "string"},
                                     },
-                                    "required": ["filename", "content"]
+                                    "required": ["filename", "content"],
                                 }
                             }
-                        }
+                        },
                     }
-
-
 
     return schema
 
@@ -107,12 +109,20 @@ def openapi_compact():
 # --- Docs Swagger et Redoc ---
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
-    return get_swagger_ui_html(openapi_url="/openapi_compact.json", title="MiniStudio - Swagger UI")
+    return get_swagger_ui_html(
+        openapi_url="/openapi_compact.json", title="MiniStudio - Swagger UI"
+    )
+
 
 @app.get("/redoc", include_in_schema=False)
 async def redoc_html():
-    return get_redoc_html(openapi_url="/openapi_compact.json", title="MiniStudio - ReDoc")
-#voici la modif ;)
+    return get_redoc_html(
+        openapi_url="/openapi_compact.json", title="MiniStudio - ReDoc"
+    )
+
+
+# voici la modif ;)
+
 
 # --- Page d'accueil ---
 # --- Page d'accueil ---
@@ -153,12 +163,14 @@ async def root():
 
 # --- Import des routes ---
 from fastapi_app.endpoints_project import router as project_router
-app.include_router(project_router,  tags=["MiniStudioGPT Project"])
+
+app.include_router(project_router, tags=["MiniStudioGPT Project"])
 
 
 # --- Point d'entrée ---
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
@@ -167,17 +179,20 @@ from fastapi import HTTPException
 from fastapi_app.models import Note
 from fastapi_app.storage import load_notes, add_note, delete_note
 
+
 # --- Routes FastAPI Notes ---
 @app.get("/notes", response_model=list[Note], tags=["FastAPI Notes"])
 def get_notes():
     """Récupère la liste complète des notes."""
     return load_notes()
 
+
 @app.post("/notes", response_model=Note, tags=["FastAPI Notes"])
 def create_note(note: Note):
     """Ajoute une nouvelle note."""
     new_note = add_note(note.title, note.content)
     return new_note
+
 
 @app.delete("/notes/{note_id}", tags=["FastAPI Notes"])
 def remove_note(note_id: int):

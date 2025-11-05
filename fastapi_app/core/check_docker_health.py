@@ -13,6 +13,7 @@ from datetime import datetime
 LOCAL_URL = "http://localhost:8100/project/ping"
 CLOUDFLARE_URL = "https://ministudio.store/project/ping"
 
+
 def check_endpoint(url: str):
     try:
         response = requests.get(url, timeout=5)
@@ -28,6 +29,7 @@ def check_endpoint(url: str):
             return False, f"❌ Code HTTP {response.status_code}", None
     except Exception as e:
         return False, f"❌ Erreur : {e}", None
+
 
 def main():
     print("\n🔍 Vérification du conteneur MiniStudioGPT v1.4.4")
@@ -64,6 +66,7 @@ def main():
 
     print("\n🕒 Test terminé à", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print("=" * 55)
+
 
 if __name__ == "__main__":
     main()

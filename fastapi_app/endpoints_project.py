@@ -10,15 +10,21 @@ from pydantic import BaseModel
 from pathlib import Path
 from datetime import datetime
 import json, os, shutil, re
-from fastapi_app.core.builder_core import auto_patch_function, auto_repair_file, session_recovery
+from fastapi_app.core.builder_core import (
+    auto_patch_function,
+    auto_repair_file,
+    session_recovery,
+)
 
 router = APIRouter(prefix="/project", tags=["MiniStudioGPT Project"])
+
 
 # ==============================================================
 # ðŸ“¦ 0. ModÃ¨les Pydantic
 # ==============================================================
 class ProjectFileRequest(BaseModel):
     filename: str
+
 
 class ProjectWriteRequest(BaseModel):
     filename: str
@@ -34,9 +40,8 @@ async def ping():
         "status": "ok",
         "message": "MiniStudioGPT backend actif (v1.4.4-8)",
         "server_version": "v1.4.4-8",
-        "ci_cd": "enabled"
+        "ci_cd": "enabled",
     }
-
 
 
 # ==============================================================
@@ -88,7 +93,10 @@ async def project_write(request: Request):
             with open(target, "a", encoding="utf-8") as f:
                 f.write(str(final_content) + "\n")
         elif isinstance(final_content, (dict, list)):
-            target.write_text(json.dumps(final_content, ensure_ascii=False, indent=2), encoding="utf-8")
+            target.write_text(
+                json.dumps(final_content, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
         else:
             target.write_text(str(final_content), encoding="utf-8")
     except Exception as e:
@@ -97,7 +105,7 @@ async def project_write(request: Request):
     return {
         "status": "ok",
         "filename": filename,
-        "mode": "fusion" if target.suffix.lower() == ".json" else "overwrite"
+        "mode": "fusion" if target.suffix.lower() == ".json" else "overwrite",
     }
 
 
@@ -157,12 +165,20 @@ async def project_snapshot():
     else:
         snapshot["memoire"] = {}
 
-    snapshot["session_log"] = session_path.read_text(encoding="utf-8") if session_path.exists() else ""
+    snapshot["session_log"] = (
+        session_path.read_text(encoding="utf-8") if session_path.exists() else ""
+    )
     snapshot["project_map"] = (
-        json.loads(project_map_path.read_text(encoding="utf-8")) if project_map_path.exists() else {}
+        json.loads(project_map_path.read_text(encoding="utf-8"))
+        if project_map_path.exists()
+        else {}
     )
 
-    return {"status": "ok", "timestamp": datetime.now().isoformat(), "snapshot": snapshot}
+    return {
+        "status": "ok",
+        "timestamp": datetime.now().isoformat(),
+        "snapshot": snapshot,
+    }
 
 
 # ==============================================================
@@ -191,7 +207,9 @@ async def project_apply_code(req: ProjectWriteRequest):
 
     def log_event(msg: str):
         with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(f"[MiniStudioGPT {SERVER_VERSION}] {datetime.now().isoformat()} | {msg}\n")
+            f.write(
+                f"[MiniStudioGPT {SERVER_VERSION}] {datetime.now().isoformat()} | {msg}\n"
+            )
 
     # VÃ©rifications prÃ©liminaires
     if not filename or not content:
@@ -255,7 +273,7 @@ async def project_apply_code(req: ProjectWriteRequest):
             "file": filename,
             "func_name": func_name,
             "server_version": SERVER_VERSION,
-            "message": "Code applied successfully"
+            "message": "Code applied successfully",
         }
 
     except Exception as e:

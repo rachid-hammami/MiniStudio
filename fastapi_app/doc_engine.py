@@ -32,7 +32,9 @@ async def get_status():
 
     for v in versions:
         percent = 0
-        section = re.search(rf"## [^\n]*{re.escape(v)}[^\n]*\n((?:.|\n)*?)(?:## |$)", content)
+        section = re.search(
+            rf"## [^\n]*{re.escape(v)}[^\n]*\n((?:.|\n)*?)(?:## |$)", content
+        )
         if section:
             lines = section.group(1).splitlines()
             total = sum(1 for l in lines if l.strip().startswith("-"))

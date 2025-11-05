@@ -17,20 +17,27 @@ MEMORY_PATH = "./memory/memoire.json"
 DRAFTS_PATH = "./memory/drafts/"
 SESSION_LOG = "./memory/session.log"
 
+
 def auto_detect_base_url():
     print("[MiniStudioGPT] 🔍 Détection du port FastAPI en cours...")
     for base in POSSIBLE_BASES:
         try:
-            res = requests.get(f"{base.replace('/project', '')}/project/ping", timeout=1)
+            res = requests.get(
+                f"{base.replace('/project', '')}/project/ping", timeout=1
+            )
             if res.status_code == 200:
                 print(f"[MiniStudioGPT] ✅ Port détecté : {base}")
                 return base
         except requests.exceptions.RequestException:
             continue
-    print("[MiniStudioGPT] 🚨 Aucun serveur FastAPI détecté sur les ports habituels (8000/8100/8080).")
+    print(
+        "[MiniStudioGPT] 🚨 Aucun serveur FastAPI détecté sur les ports habituels (8000/8100/8080)."
+    )
     return None
 
+
 BASE_URL = auto_detect_base_url() or "http://127.0.0.1:8000/project"
+
 
 class MiniStudioController:
     def __init__(self, mode="review"):
@@ -45,7 +52,7 @@ class MiniStudioController:
             "filepath": filepath,
             "func_name": func_name,
             "new_code": new_code,
-            "mode": mode
+            "mode": mode,
         }
 
         if not BASE_URL:
@@ -59,7 +66,7 @@ class MiniStudioController:
                 print(f"✅ Proposition enregistrée → {data}")
                 if mode == "auto":
                     print("⚡ Application immédiate du patch...")
-                    self.apply_last_proposal(data.get('draft'))
+                    self.apply_last_proposal(data.get("draft"))
             else:
                 print(f"❌ Erreur : {res.status_code} → {res.text}")
         except requests.exceptions.ConnectionError as e:
@@ -76,13 +83,19 @@ class MiniStudioController:
                 return
             draft_file = drafts[-1]
         try:
-            with open(os.path.join(DRAFTS_PATH, draft_file), "r", encoding="utf-8") as f:
+            with open(
+                os.path.join(DRAFTS_PATH, draft_file), "r", encoding="utf-8"
+            ) as f:
                 draft_data = json.load(f)
             filepath = draft_data["filepath"]
             func_name = draft_data["func_name"]
             res = requests.post(
                 f"{BASE_URL}/apply",
-                params={"filepath": filepath, "func_name": func_name, "draft_file": draft_file}
+                params={
+                    "filepath": filepath,
+                    "func_name": func_name,
+                    "draft_file": draft_file,
+                },
             )
             print(f"⚙️ Résultat apply → {res.json()}")
         except Exception as e:

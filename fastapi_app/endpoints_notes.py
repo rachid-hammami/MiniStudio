@@ -14,6 +14,7 @@ from typing import List, Dict
 
 router = APIRouter(prefix="", tags=["Notes"])
 
+
 # --------------------------------------------------------------
 # 🧱 Modèle Pydantic
 # --------------------------------------------------------------
@@ -21,10 +22,12 @@ class Note(BaseModel):
     title: str
     content: str
 
+
 # --------------------------------------------------------------
 # 📂 Fichier de stockage
 # --------------------------------------------------------------
 NOTES_FILE = os.path.join(os.path.dirname(__file__), "notes.json")
+
 
 def _load_notes() -> List[Dict]:
     if not os.path.exists(NOTES_FILE):
@@ -35,9 +38,11 @@ def _load_notes() -> List[Dict]:
     except json.JSONDecodeError:
         return []
 
+
 def _save_notes(notes: List[Dict]) -> None:
     with open(NOTES_FILE, "w", encoding="utf-8") as f:
         json.dump(notes, f, indent=2, ensure_ascii=False)
+
 
 # --------------------------------------------------------------
 # 🔹 GET /notes - Liste toutes les notes
@@ -46,6 +51,7 @@ def _save_notes(notes: List[Dict]) -> None:
 async def get_notes():
     """Récupère la liste complète des notes."""
     return _load_notes()
+
 
 # --------------------------------------------------------------
 # 🔹 POST /notes - Ajoute une nouvelle note
@@ -60,6 +66,7 @@ async def add_note(note: Note):
     _save_notes(notes)
     return new_note
 
+
 # --------------------------------------------------------------
 # 🔹 DELETE /notes/{id} - Supprime une note
 # --------------------------------------------------------------
@@ -72,6 +79,7 @@ async def delete_note(note_id: int):
         raise HTTPException(status_code=404, detail=f"Note {note_id} introuvable")
     _save_notes(filtered)
     return {"message": f"Note {note_id} supprimée avec succès"}
+
 
 # --------------------------------------------------------------
 # ✅ Healthcheck du module

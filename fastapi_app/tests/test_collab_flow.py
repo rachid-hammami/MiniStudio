@@ -35,10 +35,7 @@ def hello_world_v144():
 """
 
 ctrl.propose_change(
-    filepath=TARGET_FILE,
-    func_name=FUNC_NAME,
-    new_code=NEW_CODE,
-    mode="review"
+    filepath=TARGET_FILE, func_name=FUNC_NAME, new_code=NEW_CODE, mode="review"
 )
 
 # Simulation dâ€™un dÃ©lai de rÃ©vision IA â†” API
@@ -66,6 +63,7 @@ MEMORY_PATH = "./memory/memoire.json"
 SESSION_LOG = "./memory/session.log"
 AUDIT_LOG = "./memory/session_audit.log"
 
+
 def show_tail(path, lines=10):
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
@@ -75,6 +73,7 @@ def show_tail(path, lines=10):
     else:
         print(f"âš ï¸ Fichier {path} introuvable")
 
+
 # --- VÃ©rification mÃ©moire principale ---
 if os.path.exists(MEMORY_PATH):
     memoire = json.load(open(MEMORY_PATH, "r", encoding="utf-8"))
@@ -82,7 +81,9 @@ if os.path.exists(MEMORY_PATH):
     last_patch = memoire.get("last_patch", {})
     if last_patch:
         print("âœ… Dernier patch enregistrÃ© :", last_patch)
-        assert FUNC_NAME in str(last_patch), "âŒ Fonction non dÃ©tectÃ©e dans la mÃ©moire"
+        assert FUNC_NAME in str(
+            last_patch
+        ), "âŒ Fonction non dÃ©tectÃ©e dans la mÃ©moire"
     else:
         print("âš ï¸ Aucun patch trouvÃ© dans la mÃ©moire.")
 else:
@@ -101,10 +102,7 @@ print("\n=== Ã‰tape 5 : Test de rollback automatique ===")
 
 BAD_CODE = "def broken_func(:\n    return 'fail'"
 ctrl.propose_change(
-    filepath=TARGET_FILE,
-    func_name="broken_func",
-    new_code=BAD_CODE,
-    mode="review"
+    filepath=TARGET_FILE, func_name="broken_func", new_code=BAD_CODE, mode="review"
 )
 
 try:

@@ -23,6 +23,8 @@ import requests
 from fastapi_app.utils.logging_utils import log_event
 
 BASE_URL = "https://ministudio.store"
+
+
 # === Détection automatique du dossier FastAPI ===
 def detect_app_path():
     """Détecte automatiquement le dossier fastapi_app valide."""
@@ -30,7 +32,7 @@ def detect_app_path():
         "./app/fastapi_app/",
         "./fastapi_app/",
         "./MiniStudio/fastapi_app/",
-        "./src/fastapi_app/"
+        "./src/fastapi_app/",
     ]
     for path in candidates:
         if os.path.isdir(path):
@@ -38,15 +40,17 @@ def detect_app_path():
     # fallback par défaut
     return "./fastapi_app/"
 
+
 PATH_APP = detect_app_path()
 print(f"[MiniStudioGPT v1.4] ✅ Dossier FastAPI détecté : {PATH_APP}")
 
 # === Chemins racine ===
-#PATH_APP = "./fastapi_app/"
+# PATH_APP = "./fastapi_app/"
 PATH_MEMORY = "./memory/"
 PATH_LOG = os.path.join(PATH_MEMORY, "session.log")
 PATH_MEMOIRE = os.path.join(PATH_MEMORY, "memoire.json")
 PATH_BACKUP = os.path.join(PATH_MEMORY, "backups/")
+
 
 # === Fonctions de base (v1.3 conservées) ===
 def init_session():
@@ -81,9 +85,15 @@ def write_file(filename: str, content: str):
     try:
         if "memoire.json" in filename:
             current = read_file(filename)
-            content_raw = current.get("content", {}) if isinstance(current, dict) else {}
+            content_raw = (
+                current.get("content", {}) if isinstance(current, dict) else {}
+            )
             try:
-                current_data = json.loads(content_raw) if isinstance(content_raw, str) else content_raw
+                current_data = (
+                    json.loads(content_raw)
+                    if isinstance(content_raw, str)
+                    else content_raw
+                )
             except Exception:
                 current_data = {}
             try:
@@ -93,7 +103,7 @@ def write_file(filename: str, content: str):
             merged = {**current_data, **new_data}
             payload = {
                 "filename": filename,
-                "content": json.dumps(merged, ensure_ascii=False)
+                "content": json.dumps(merged, ensure_ascii=False),
             }
             log_event("Fusion non destructive appliquée sur memoire.json")
         else:
@@ -121,7 +131,10 @@ def sauvegarder_backup(filepath):
     os.makedirs(PATH_BACKUP, exist_ok=True)
     if not os.path.exists(filepath):
         return None
-    backup_name = os.path.basename(filepath) + f".bak_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    backup_name = (
+        os.path.basename(filepath)
+        + f".bak_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    )
     backup_path = os.path.join(PATH_BACKUP, backup_name)
     shutil.copy(filepath, backup_path)
     log_event(f"Backup créé pour {filepath}")
@@ -174,14 +187,19 @@ def auto_patch_function(filepath, func_name, new_code):
             return False
 
         for j in range(start + 1, len(lines)):
-            if lines[j].strip().startswith("def ") or lines[j].strip().startswith("class "):
+            if lines[j].strip().startswith("def ") or lines[j].strip().startswith(
+                "class "
+            ):
                 end = j
                 break
         if end is None:
             end = len(lines)
 
         indent = " " * (len(lines[start]) - len(lines[start].lstrip()))
-        new_block = [indent + line if line.strip() else line for line in new_code.splitlines(True)]
+        new_block = [
+            indent + line if line.strip() else line
+            for line in new_code.splitlines(True)
+        ]
         new_content = lines[:start] + new_block + lines[end:]
 
         temp_path = filepath + ".tmp"

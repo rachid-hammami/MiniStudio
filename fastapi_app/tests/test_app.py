@@ -30,7 +30,9 @@ async def test_read_main_py():
     """Teste lecture/écriture/suppression de fichier projet avec log automatique"""
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         # 1️⃣ Lecture du fichier principal
-        response = await client.post("/project/read", json={"filename": "fastapi_app/main.py"})
+        response = await client.post(
+            "/project/read", json={"filename": "fastapi_app/main.py"}
+        )
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "ok"
@@ -38,10 +40,10 @@ async def test_read_main_py():
 
         # 2️⃣ Écriture d’un fichier temporaire
         test_filename = "memory/test_write_check.txt"
-        write_resp = await client.post("/project/write", json={
-            "filename": test_filename,
-            "content": "MiniStudioGPT Write Test OK"
-        })
+        write_resp = await client.post(
+            "/project/write",
+            json={"filename": test_filename, "content": "MiniStudioGPT Write Test OK"},
+        )
         assert write_resp.status_code == 200
         assert write_resp.json()["status"] == "ok"
 
@@ -51,7 +53,9 @@ async def test_read_main_py():
         assert "MiniStudioGPT Write Test OK" in read_resp.json()["content"]
 
         # 4️⃣ Suppression du fichier temporaire
-        del_resp = await client.post("/project/delete", json={"filename": test_filename})
+        del_resp = await client.post(
+            "/project/delete", json={"filename": test_filename}
+        )
         assert del_resp.status_code == 200
         assert del_resp.json()["status"] == "ok"
 
@@ -69,7 +73,7 @@ async def test_apply_code_security():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.post(
             "/project/apply-code",
-            json={"filename": "README.md", "content": "def fake(): pass"}
+            json={"filename": "README.md", "content": "def fake(): pass"},
         )
     assert response.status_code == 400
 
@@ -83,12 +87,16 @@ from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
+
 def test_add_note():
-    response = client.post("/notes", json={"id": 0, "title": "Test Note", "content": "Contenu de test"})
+    response = client.post(
+        "/notes", json={"id": 0, "title": "Test Note", "content": "Contenu de test"}
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["title"] == "Test Note"
     assert data["content"] == "Contenu de test"
+
 
 def test_list_notes():
     response = client.get("/notes")
@@ -96,6 +104,7 @@ def test_list_notes():
     data = response.json()
     assert isinstance(data, list)
     assert any(note["title"] == "Test Note" for note in data)
+
 
 def test_delete_note():
     response = client.get("/notes")

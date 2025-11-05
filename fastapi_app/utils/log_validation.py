@@ -19,6 +19,7 @@ BASE_URL = "https://ministudio.store"
 # 🧠 1. Téléchargement du snapshot
 # ==============================
 
+
 def fetch_snapshot() -> Dict:
     """
     Récupère la mémoire complète du projet (incluant session.log)
@@ -41,6 +42,7 @@ def fetch_snapshot() -> Dict:
 # 🧩 2. Analyse du journal
 # ==============================
 
+
 def analyze_log(session_log: str) -> Dict[str, bool]:
     """
     Analyse le contenu de session.log pour détecter la présence
@@ -51,7 +53,7 @@ def analyze_log(session_log: str) -> Dict[str, bool]:
         "Snapshot chargé": "snapshot chargé" in session_log.lower(),
         "Fichier modifié": "modifié via API" in session_log,
         "Mémoire mise à jour": "Mémoire persistante mise à jour" in session_log,
-        "Fin de session": "Fin de session" in session_log
+        "Fin de session": "Fin de session" in session_log,
     }
     return checks
 
@@ -59,6 +61,7 @@ def analyze_log(session_log: str) -> Dict[str, bool]:
 # ==============================
 # 🔎 3. Validation complète
 # ==============================
+
 
 def validate_logs() -> None:
     """

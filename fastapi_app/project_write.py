@@ -38,6 +38,7 @@ class ProjectWriteRequest(BaseModel):
     - `filename`: chemin relatif du fichier (ex: "memory/memoire.json")
     - `content`: contenu à écrire (texte brut ou dictionnaire JSON)
     """
+
     filename: str
     content: dict | str
 
@@ -63,7 +64,7 @@ async def full_access():
     """
     🔍 Liste tous les fichiers accessibles dans le projet MiniStudio.
     Retourne une arborescence complète pour audit, exploration ou sauvegarde.
-    
+
     ⚠️ Utilisation réservée à l’administrateur ou MiniStudioGPT.
     """
     base = BASE_PATH
@@ -76,12 +77,12 @@ async def full_access():
 async def full_write(request: ProjectWriteRequest):
     """
     ✍️ Écriture complète d’un fichier dans le projet MiniStudio.
-    
+
     Permet à MiniStudioGPT ou à un service autorisé d’écrire ou créer des fichiers :
     - fichiers mémoire (`/memory/memoire.json`)
     - journaux de session (`/memory/session.log`)
     - rapports (`/reports/report_*.json`)
-    
+
     ### Exemple de corps JSON attendu :
     ```json
     {
@@ -106,7 +107,9 @@ async def full_write(request: ProjectWriteRequest):
         return {"status": "ok", "path": str(target)}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur écriture projet : {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Erreur écriture projet : {str(e)}"
+        )
 
 
 # === 📖 Route : /project/read ===
@@ -114,10 +117,10 @@ async def full_write(request: ProjectWriteRequest):
 async def full_read(request: Request):
     """
     📖 Lecture complète d’un fichier du projet MiniStudio.
-    
+
     Lit un fichier texte ou JSON depuis `/app`.
     Si le fichier est JSON, il est automatiquement désérialisé.
-    
+
     ### Exemple de corps JSON attendu :
     ```json
     { "filename": "memory/memoire.json" }
@@ -131,7 +134,9 @@ async def full_read(request: Request):
 
     path = safe_path(filename)
     if not path.exists():
-        raise HTTPException(status_code=404, detail=f"Fichier '{filename}' introuvable.")
+        raise HTTPException(
+            status_code=404, detail=f"Fichier '{filename}' introuvable."
+        )
 
     try:
         if path.suffix == ".json":

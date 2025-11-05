@@ -18,7 +18,8 @@ def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
-    conn.execute("""
+    conn.execute(
+        """
     CREATE TABLE IF NOT EXISTS ai_suggestions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         file TEXT,
@@ -29,16 +30,19 @@ def get_db_connection():
         status TEXT DEFAULT 'pending',
         created_at TEXT
     )
-    """)
+    """
+    )
 
-    conn.execute("""
+    conn.execute(
+        """
     CREATE TABLE IF NOT EXISTS ai_actions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         suggestion_id INTEGER,
         action TEXT,
         timestamp TEXT
     )
-    """)
+    """
+    )
 
     conn.commit()
     return conn

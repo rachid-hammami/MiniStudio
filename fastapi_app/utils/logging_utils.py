@@ -21,20 +21,25 @@ from time import sleep
 # 🔧 Configuration globale
 # ==============================
 
-DEFAULT_ENDPOINT = os.getenv("MINISTUDIO_API_WRITE", "https://ministudio.store/project/write")
+DEFAULT_ENDPOINT = os.getenv(
+    "MINISTUDIO_API_WRITE", "https://ministudio.store/project/write"
+)
 FALLBACK_LOG_PATH = Path("./memory/session_local_fallback.log")
 
 # ==============================
 # 🧠 Fonction principale
 # ==============================
 
-def log_event(event_text: str,
-              endpoint: str = DEFAULT_ENDPOINT,
-              retries: int = 2,
-              delay: float = 1.5) -> bool:
+
+def log_event(
+    event_text: str,
+    endpoint: str = DEFAULT_ENDPOINT,
+    retries: int = 2,
+    delay: float = 1.5,
+) -> bool:
     """
     Journalise un événement dans la mémoire distante (session.log) du backend MiniStudioGPT.
-    
+
     Args:
         event_text (str): Texte brut de l’événement à consigner.
         endpoint (str): URL de l’API /project/write.
@@ -47,10 +52,7 @@ def log_event(event_text: str,
     timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     formatted = f"[{timestamp}] {event_text}"
 
-    payload = {
-        "filename": "memory/session.log",
-        "content": formatted
-    }
+    payload = {"filename": "memory/session.log", "content": formatted}
 
     # ============================
     # Tentative de requête HTTP
@@ -62,9 +64,13 @@ def log_event(event_text: str,
                 print(f"[MiniStudioGPT Log] ✅ {formatted}")
                 return True
             else:
-                print(f"[MiniStudioGPT Log] ⚠️ Erreur HTTP ({response.status_code}) – tentative {attempt}/{retries}")
+                print(
+                    f"[MiniStudioGPT Log] ⚠️ Erreur HTTP ({response.status_code}) – tentative {attempt}/{retries}"
+                )
         except Exception as e:
-            print(f"[MiniStudioGPT Log] ⚠️ Exception lors du log (tentative {attempt}/{retries}): {e}")
+            print(
+                f"[MiniStudioGPT Log] ⚠️ Exception lors du log (tentative {attempt}/{retries}): {e}"
+            )
         sleep(delay)
 
     # ============================
@@ -74,7 +80,9 @@ def log_event(event_text: str,
         FALLBACK_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(FALLBACK_LOG_PATH, "a", encoding="utf-8") as f:
             f.write(formatted + "\n")
-        print(f"[MiniStudioGPT Log] 🔄 Sauvegarde locale (fallback) : {FALLBACK_LOG_PATH}")
+        print(
+            f"[MiniStudioGPT Log] 🔄 Sauvegarde locale (fallback) : {FALLBACK_LOG_PATH}"
+        )
         return False
     except Exception as e:
         print(f"[MiniStudioGPT Log] ❌ Impossible d’écrire le fallback : {e}")

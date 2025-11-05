@@ -43,15 +43,14 @@ def dummy():
     print("✅ Function patched by MiniStudioGPT v1.4.4")
     return "patched version"
 """
-payload = {
-    "filename": TEST_FILE,
-    "content": new_function_code
-}
+payload = {"filename": TEST_FILE, "content": new_function_code}
 r = requests.post(f"{BASE_URL}/apply-code", json=payload)
 print("Status:", r.status_code)
 print("Response:", r.json())
 assert r.status_code == 200, "❌ Apply-code a échoué"
-assert "patched version" in open(TEST_FILE, encoding="utf-8").read(), "❌ Patch non détecté"
+assert (
+    "patched version" in open(TEST_FILE, encoding="utf-8").read()
+), "❌ Patch non détecté"
 print("✅ Patch confirmé")
 
 # =====================================================
@@ -63,16 +62,15 @@ def brand_new_feature():
     print('✨ Nouvelle fonction créée automatiquement')
     return 'ok'
 """
-payload = {
-    "filename": TEST_FILE,
-    "content": missing_func_code
-}
+payload = {"filename": TEST_FILE, "content": missing_func_code}
 r = requests.post(f"{BASE_URL}/apply-code", json=payload)
 resp = r.json()
 print("Status:", r.status_code)
 print("Response:", resp)
 assert r.status_code == 200, "❌ Apply-code a échoué pour création automatique"
-assert "brand_new_feature" in open(TEST_FILE, encoding="utf-8").read(), "❌ Fonction non créée"
+assert (
+    "brand_new_feature" in open(TEST_FILE, encoding="utf-8").read()
+), "❌ Fonction non créée"
 assert resp.get("server_version") == "v1.4.4", "❌ Mauvaise version serveur"
 print("✅ Création automatique OK")
 

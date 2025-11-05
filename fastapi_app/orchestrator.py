@@ -4,6 +4,7 @@ from .analyzer_engine import AnalyzerOrchestrator
 
 router = APIRouter()
 
+
 @router.post("/generate-report")
 def generate_report():
     """
