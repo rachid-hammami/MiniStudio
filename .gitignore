@@ -1,13 +1,127 @@
-# Fichiers sensibles
+########################################
+#      MiniStudio – Git Ignore
+########################################
+
+###############
+#  SENSIBLE   #
+###############
 .env
 *.env
 
-# Données locales
+# Clés API, config locales
+*.key
+*.token
+
+###################
+#  PYTHON / FASTAPI
+###################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs Python
+*.log
+
+# Environnement virtuel
+venv/
+.venv/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+###################
+#  MINISTUDIOGPT
+###################
+
+# Mémoire interne
 memory/*.json
 memory/*.log
+
+# Snapshots internes
+snapshots/*
 reports/*
-# Fichiers SQLite temporaires
+
+# Fichiers générés à chaud
+project_map.json
+memoire.json
+session.log
+session_audit.log
+
+###################
+#  SQLITE / BDD
+###################
+
+# SQLite databases & temp files
 *.db
+*.sqlite
 *.db-shm
 *.db-wal
+
+# Nextcloud sync autosave
 .sync_*
+
+###################
+#  DOCKER
+###################
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose*.backup
+
+# Docker volumes & data
+data/
+volumes/
+db_data/
+nextcloud/
+ministudio_data/
+
+###################
+#  EDITORS / IDE
+###################
+
+# VS Code
+.vscode/
+.settings/
+
+# JetBrains
+.idea/
+
+###################
+#  NODE / FRONT
+###################
+node_modules/
+npm-debug.log
+yarn-error.log
+
+###################
+#  OS FILES
+###################
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# MacOS
+.DS_Store
+
+###################
+#  TUNNELS / TOOLS
+###################
+
+# Cloudflare tunnel cache
+.cloudflared/
+*.pid
+
+# ngrok / local tunnels
+*.yml.tunnel
+*.log.tunnel
+
+###################
+#  TESTS
+###################
+
+# pytest cache
+.pytest_cache/
+.coverage
