@@ -125,3 +125,4 @@ Desktop.ini
 # pytest cache
 .pytest_cache/
 .coverage
+memory/session.log
