@@ -5,4 +5,9 @@
 # Données locales
 memory/*.json
 memory/*.log
-reports/
+reports/*
+# Fichiers SQLite temporaires
+*.db
+*.db-shm
+*.db-wal
+.sync_*
