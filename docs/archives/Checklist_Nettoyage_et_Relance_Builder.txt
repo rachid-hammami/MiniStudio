@@ -1,0 +1,69 @@
+CHECKLIST OFFICIELLE – NETTOYAGE & RELANCE BUILDER
+Version : 1.0
+Date : 3 novembre 2025
+
+Objectif : Préparer MiniStudio et MiniStudioGPT pour le retest FastAPI Notes.
+
+--------------------------------------
+🧹 1. NETTOYAGE DU DOSSIER MEMORY
+
+✅ Ouvrir le dossier /memory
+   - Conserver uniquement :
+        memoire.json
+        project_map.json
+        session.log
+        studio.db
+   - Ranger les autres fichiers dans :
+        /memory/fallbacks/
+        /memory/audits/
+        /memory/backups/
+        /memory/draft/
+   - Supprimer les fichiers temporaires ou anciens tests (test_apply, test_repair...)
+
+--------------------------------------
+🚀 2. REDÉMARRAGE DE MINISTUDIO
+
+Dans PowerShell :
+docker stop ministudio
+docker start ministudio
+
+--------------------------------------
+🧩 3. VÉRIFICATION DU BUILDER
+
+✅ Vérifier le schéma actif :
+    - https://ministudio.store/openapi.json
+    - ou https://ministudio.store/openapi_compact.json
+
+✅ Si changement de schéma :
+    - vider le cache du builder
+    - recharger le schéma avant toute action
+
+--------------------------------------
+🧠 4. RELANCE DE MINISTUDIOGPT
+
+✅ Lancer ton GPT personnel
+✅ Lui dire :
+   "On repart du projet MiniStudio nettoyé, builder mis à jour, tu peux charger la mémoire et vérifier les routes."
+✅ Vérifier que Swagger affiche toutes les routes (ping, apply-code, notes...)
+
+--------------------------------------
+🧪 5. TESTS À EFFECTUER
+
+1️⃣ POST /notes → création automatique du fichier notes.json ?
+2️⃣ GET /notes → les notes sont-elles listées ?
+3️⃣ DELETE /notes/{id} → suppression correcte ?
+4️⃣ Redémarrer le conteneur → notes.json toujours présent ?
+5️⃣ Swagger affiche toujours toutes les routes ?
+
+--------------------------------------
+📦 6. APRÈS LE TEST
+
+✅ Créer un dossier Benchmarks/Retest_2025-11-03/
+   - y placer :
+       rapport_v1.4.4_retest.md
+       session.log
+       memoire.json
+✅ Noter si tout est stable avant de passer au CI/CD.
+
+--------------------------------------
+Fin de checklist

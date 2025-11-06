@@ -1,0 +1,8 @@
+# Fichiers sensibles
+.env
+*.env
+
+# Données locales
+memory/*.json
+memory/*.log
+reports/
