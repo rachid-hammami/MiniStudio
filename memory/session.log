@@ -416,3 +416,17 @@
 {'raw_content': '[2025-11-05T12:51:15] ♻️ Session recovery complétée'}
 {'raw_content': '[2025-11-06T08:14:08] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
 {'raw_content': '[2025-11-06T08:14:11] ♻️ Session recovery complétée'}
+{'raw_content': '[2025-11-06T08:31:00] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:31:02] ♻️ Session recovery complétée'}
+{'raw_content': '[2025-11-06T08:35:30] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:35:33] ♻️ Session recovery complétée'}
+{'raw_content': '[2025-11-06T08:42:44] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:42:47] ♻️ Session recovery complétée'}
+{'raw_content': '[2025-11-06T08:49:28] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:49:31] ♻️ Session recovery complétée'}
+{'raw_content': '[2025-11-06T08:52:52] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:52:55] Aucun journal trouvé pour recovery'}
+{'raw_content': '[2025-11-06T08:53:57] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:54:00] Aucun journal trouvé pour recovery'}
+{'raw_content': '[2025-11-06T08:54:48] Fichier introuvable : ./fastapi_app/test_patch_target.py'}
+{'raw_content': '[2025-11-06T08:54:51] Aucun journal trouvé pour recovery'}
