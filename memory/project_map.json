@@ -1,83 +1,706 @@
 {
-  "last_update": "2025-11-01T14:15:00",
-  "updated_by": "MiniStudioGPT v1.4.4",
-  "project_root": "C:/Users/Dell/Documents/Developpement/GitHub/MiniStudio/",
-  "summary": {
-    "total_files": 160,
-    "languages": {
-      "python": 70,
-      "typescript_javascript": 35,
-      "markdown_txt": 25,
-      "json_yaml": 20
-    },
-    "main_directories": [
-      "fastapi_app",
-      "frontend",
-      "memory",
-      "docs",
-      "save",
-      "tests"
-    ]
+  "/app/README.md": {
+    "size": 4617,
+    "modified": "2025-11-06T14:27:24"
   },
-  "structure": {
-    "fastapi_app": [
-      "main.py",
-      "endpoints_project.py",
-      "builder_core.py",
-      "orchestrator.py",
-      "system_orchestrator.py",
-      "control_panel.py",
-      "ai_engine.py",
-      "analyzer_engine.py",
-      "doc_engine.py",
-      "database.py",
-      "utils/log_validation.py",
-      "utils/logging_utils.py",
-      "static/control.html",
-      "static/control.js",
-      "static/dashboard.js",
-      "static/index.html",
-      "static/style.css",
-      "test_apply_target.py",
-      "test_apply_target_async.py",
-      "test_patch_target.py"
-    ],
-    "memory": [
-      "memoire.json",
-      "project_map.json",
-      "studio.db",
-      "backups/",
-      "drafts/"
-    ],
-    "docs": [
-      "Cahier_des_charges_MiniStudioGPT_v1.4.4.txt",
-      "MiniStudioGPT_Session_Report_v1.4.3.md",
-      "travaux/",
-      "Cahier_des_charges_MiniStudioGPT_v1.3.txt"
-    ],
-    "frontend": [
-      "src/",
-      "public/",
-      "vite.config.ts",
-      "tailwind.config.js",
-      "package.json"
-    ],
-    "tests": [
-      "test_apply_code.py",
-      "test_apply_code_async.py",
-      "test_builder_core.py",
-      "test_collab_flow.py",
-      "test_repair.py",
-      "test_recovery.py"
-    ],
-    "save": [
-      "builder_core.py",
-      "endpoints_project.py",
-      "main.py",
-      "secure_file_endpoints.py",
-      "docker-compose.yml",
-      "Dockerfile"
-    ]
+  "/app/.sync_b2ee5ad0354f.db-shm": {
+    "size": 32768,
+    "modified": "2025-11-07T16:19:36"
   },
-  "note": "Carte du projet mise à jour automatiquement à partir du fichier project_structure_info.txt (analyse complète et fusion non destructive)."
+  "/app/GUIDE_INTERNE_MINISTUDIO.md": {
+    "size": 3797,
+    "modified": "2025-10-04T18:52:01"
+  },
+  "/app/CHANGELOG.md": {
+    "size": 2957,
+    "modified": "2025-11-05T12:49:10"
+  },
+  "/app/.gitignore": {
+    "size": 1587,
+    "modified": "2025-11-06T09:05:52"
+  },
+  "/app/start_ministudio.bat": {
+    "size": 1885,
+    "modified": "2025-10-04T18:52:55"
+  },
+  "/app/.sync_b2ee5ad0354f.db-wal": {
+    "size": 4169472,
+    "modified": "2025-11-08T17:15:43"
+  },
+  "/app/docker-compose.yml": {
+    "size": 910,
+    "modified": "2025-11-08T17:04:55"
+  },
+  "/app/package-lock.json": {
+    "size": 89,
+    "modified": "2025-10-09T14:32:50"
+  },
+  "/app/whitelist.json": {
+    "size": 184,
+    "modified": "2025-10-03T19:04:35"
+  },
+  "/app/Desktop.ini": {
+    "size": 76,
+    "modified": "2025-10-27T20:24:43"
+  },
+  "/app/Dockerfile": {
+    "size": 697,
+    "modified": "2025-10-24T20:44:04"
+  },
+  "/app/init_db.py": {
+    "size": 1826,
+    "modified": "2025-10-05T19:30:01"
+  },
+  "/app/pytest.ini": {
+    "size": 182,
+    "modified": "2025-11-05T12:24:58"
+  },
+  "/app/structure.txt": {
+    "size": 101410,
+    "modified": "2025-11-05T09:58:11"
+  },
+  "/app/.nextcloudsync.log": {
+    "size": 0,
+    "modified": "2025-11-06T09:01:01"
+  },
+  "/app/.sync_b2ee5ad0354f.db": {
+    "size": 9216000,
+    "modified": "2025-11-08T17:15:43"
+  },
+  "/app/restructure_core_v2.ps1": {
+    "size": 3921,
+    "modified": "2025-11-04T15:43:56"
+  },
+  "/app/.env.example": {
+    "size": 264,
+    "modified": "2025-10-29T09:39:18"
+  },
+  "/app/requirements.txt": {
+    "size": 579,
+    "modified": "2025-11-03T17:59:06"
+  },
+  "/app/memory/memoire.json": {
+    "size": 1256,
+    "modified": "2025-10-30T20:50:19.523261"
+  },
+  "/app/memory/project_map.json": {
+    "size": 18019,
+    "modified": "2025-11-06T20:01:12.685353"
+  },
+  "/app/memory/session.log": {
+    "size": 40386,
+    "modified": "2025-11-06T09:06:12.099696"
+  },
+  "/app/memory/session_audit.log": {
+    "size": 4847,
+    "modified": "2025-11-09T06:19:33.486949"
+  },
+  "/app/memory/session_local_fallback.log": {
+    "size": 4945,
+    "modified": "2025-11-06T09:00:59.817271"
+  },
+  "/app/memory/studio.db": {
+    "size": 12288,
+    "modified": "2025-11-06T09:00:59.922693"
+  },
+  "/app/memory/test_report.json": {
+    "size": 1090,
+    "modified": "2025-11-09T06:17:14.917621"
+  },
+  "/app/memory/archives/restructure_core_report_v2.txt": {
+    "size": 683932,
+    "modified": "2025-11-04T15:50:08"
+  },
+  "/app/memory/backups/main.py.bak_20251103173534": {
+    "size": 5856,
+    "modified": "2025-11-03T17:35:34.483830"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251031103619": {
+    "size": 40,
+    "modified": "2025-10-31T10:36:19.388898"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251031104153": {
+    "size": 100,
+    "modified": "2025-10-31T10:41:53.655430"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251031173535": {
+    "size": 100,
+    "modified": "2025-10-31T17:35:35.309621"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251101093449": {
+    "size": 100,
+    "modified": "2025-11-01T09:34:49.195732"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251101093638": {
+    "size": 216,
+    "modified": "2025-11-01T09:36:38.347554"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251104202939": {
+    "size": 40,
+    "modified": "2025-11-04T20:29:39.543610"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251104203036": {
+    "size": 99,
+    "modified": "2025-11-04T20:30:36.868480"
+  },
+  "/app/memory/backups/test_apply_target.py.bak_20251104203108": {
+    "size": 201,
+    "modified": "2025-11-04T20:31:08.098950"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031124901": {
+    "size": 40,
+    "modified": "2025-10-31T11:49:01.371668"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183403": {
+    "size": 113,
+    "modified": "2025-10-31T17:34:03.274158"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183405": {
+    "size": 113,
+    "modified": "2025-10-31T17:34:05.732022"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183627": {
+    "size": 113,
+    "modified": "2025-10-31T17:36:27.784602"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183630": {
+    "size": 113,
+    "modified": "2025-10-31T17:36:30.292918"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183652": {
+    "size": 113,
+    "modified": "2025-10-31T17:36:52.164142"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031183654": {
+    "size": 113,
+    "modified": "2025-10-31T17:36:54.412112"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031184037": {
+    "size": 113,
+    "modified": "2025-10-31T17:40:37.572462"
+  },
+  "/app/memory/backups/test_apply_target_async.py.bak_20251031184039": {
+    "size": 113,
+    "modified": "2025-10-31T17:40:39.846206"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030160903": {
+    "size": 52,
+    "modified": "2025-10-30T15:09:03.024992"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030162805": {
+    "size": 75,
+    "modified": "2025-10-30T15:28:05.177723"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030162842": {
+    "size": 75,
+    "modified": "2025-10-30T15:28:42.793542"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030164802": {
+    "size": 52,
+    "modified": "2025-10-30T15:48:02.768574"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030165239": {
+    "size": 75,
+    "modified": "2025-10-30T16:52:39.262582"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251030170106": {
+    "size": 85,
+    "modified": "2025-10-30T17:01:06.452243"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251031183528": {
+    "size": 142,
+    "modified": "2025-10-31T17:35:28.251278"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251031183622": {
+    "size": 142,
+    "modified": "2025-10-31T17:36:22.869919"
+  },
+  "/app/memory/backups/test_patch_target.py.bak_20251103171518": {
+    "size": 142,
+    "modified": "2025-11-03T17:15:18.890275"
+  },
+  "/app/memory/sandbox/main_draft_2025-10-30.json": {
+    "size": 189,
+    "modified": "2025-10-30T20:49:25"
+  },
+  "/app/memory/sandbox/test_apply_target.py": {
+    "size": 226,
+    "modified": "2025-11-01T09:37:38"
+  },
+  "/app/memory/sandbox/test_apply_target.py.bak": {
+    "size": 226,
+    "modified": "2025-11-01T09:37:38"
+  },
+  "/app/memory/sandbox/test_apply_target_async.py": {
+    "size": 113,
+    "modified": "2025-10-31T17:40:40"
+  },
+  "/app/memory/sandbox/test_apply_target_async.py.bak": {
+    "size": 113,
+    "modified": "2025-10-31T17:40:40"
+  },
+  "/app/memory/sandbox/test_patch_target_draft_2025-10-30.json": {
+    "size": 242,
+    "modified": "2025-10-30T20:50:19"
+  },
+  "/app/reports/report_20251006-163234.json": {
+    "size": 2965,
+    "modified": "2025-10-06T16:32:34"
+  },
+  "/app/reports/report_analyzer_engine.py_2025-10-08_10-04-41.json": {
+    "size": 113,
+    "modified": "2025-10-08T08:04:41"
+  },
+  "/app/reports/report_test.py_2025-10-08_10-59-54.json": {
+    "size": 102,
+    "modified": "2025-10-08T08:59:54"
+  },
+  "/app/reports/report_ai_engine.py_2025-10-08_10-04-27.json": {
+    "size": 107,
+    "modified": "2025-10-08T08:04:27"
+  },
+  "/app/reports/report_dashboard.js_2025-10-08_10-05-08.json": {
+    "size": 107,
+    "modified": "2025-10-08T08:05:08"
+  },
+  "/app/reports/report_database.py_2025-10-08_10-04-43.json": {
+    "size": 106,
+    "modified": "2025-10-08T08:04:43"
+  },
+  "/app/reports/report_database.py_2025-10-08_10-07-30.json": {
+    "size": 106,
+    "modified": "2025-10-08T08:07:30"
+  },
+  "/app/reports/report_ai_engine.py_2025-10-08_10-06-02.json": {
+    "size": 107,
+    "modified": "2025-10-08T08:06:02"
+  },
+  "/app/fastapi_app/ai_engine.py": {
+    "size": 5402,
+    "modified": "2025-11-05T12:14:47.795047"
+  },
+  "/app/fastapi_app/analyzer_engine.py": {
+    "size": 4517,
+    "modified": "2025-11-05T12:14:47.768413"
+  },
+  "/app/fastapi_app/api_files.py": {
+    "size": 1827,
+    "modified": "2025-11-05T12:14:47.786975"
+  },
+  "/app/fastapi_app/control_panel.py": {
+    "size": 1085,
+    "modified": "2025-11-05T12:14:47.678493"
+  },
+  "/app/fastapi_app/database.py": {
+    "size": 1153,
+    "modified": "2025-11-05T12:14:47.828489"
+  },
+  "/app/fastapi_app/doc_engine.py": {
+    "size": 1852,
+    "modified": "2025-11-05T12:14:47.909152"
+  },
+  "/app/fastapi_app/endpoints_notes.py": {
+    "size": 3279,
+    "modified": "2025-11-05T12:14:47.956946"
+  },
+  "/app/fastapi_app/endpoints_project.py": {
+    "size": 13909,
+    "modified": "2025-11-08T15:22:25.981611"
+  },
+  "/app/fastapi_app/example.txt": {
+    "size": 55,
+    "modified": "2025-10-21T07:26:33.621977"
+  },
+  "/app/fastapi_app/main.py": {
+    "size": 6964,
+    "modified": "2025-11-08T16:51:23.613206"
+  },
+  "/app/fastapi_app/main.py.2025-10-03-15h2259.bak": {
+    "size": 10059,
+    "modified": "2025-10-03T15:22:59"
+  },
+  "/app/fastapi_app/main.py.2025-10-03-15h3937.bak": {
+    "size": 10488,
+    "modified": "2025-10-03T15:39:37"
+  },
+  "/app/fastapi_app/main.py.20251006-162150.bak": {
+    "size": 6214,
+    "modified": "2025-10-06T16:21:50"
+  },
+  "/app/fastapi_app/models.py": {
+    "size": 100,
+    "modified": "2025-11-05T12:14:47.983438"
+  },
+  "/app/fastapi_app/notes.json": {
+    "size": 89,
+    "modified": "2025-11-04T14:07:26.398077"
+  },
+  "/app/fastapi_app/orchestrator.py": {
+    "size": 600,
+    "modified": "2025-11-05T12:14:48.007334"
+  },
+  "/app/fastapi_app/project_write.py": {
+    "size": 5023,
+    "modified": "2025-11-05T12:14:48.147223"
+  },
+  "/app/fastapi_app/README.md": {
+    "size": 2017,
+    "modified": "2025-11-03T18:04:34.530274"
+  },
+  "/app/fastapi_app/refresh_ministudio.bat": {
+    "size": 173,
+    "modified": "2025-10-28T18:55:21.383663"
+  },
+  "/app/fastapi_app/run_manager.py": {
+    "size": 874,
+    "modified": "2025-11-05T12:14:48.068487"
+  },
+  "/app/fastapi_app/storage.py": {
+    "size": 1345,
+    "modified": "2025-11-05T12:14:48.141269"
+  },
+  "/app/fastapi_app/system_orchestrator.py": {
+    "size": 2439,
+    "modified": "2025-11-05T12:14:48.238795"
+  },
+  "/app/fastapi_app/test_path.py": {
+    "size": 225,
+    "modified": "2025-11-06T19:55:22"
+  },
+  "/app/fastapi_app/__init__.py": {
+    "size": 0,
+    "modified": "2025-10-31T10:50:46.336167"
+  },
+  "/app/fastapi_app/core/builder_core.py": {
+    "size": 8870,
+    "modified": "2025-11-05T12:14:47.995687"
+  },
+  "/app/fastapi_app/core/check_docker_health.py": {
+    "size": 4694,
+    "modified": "2025-11-08T15:25:29.697616"
+  },
+  "/app/fastapi_app/core/controller_collab.py": {
+    "size": 5189,
+    "modified": "2025-11-05T12:14:47.976930"
+  },
+  "/app/fastapi_app/core/cortex_service.py": {
+    "size": 5999,
+    "modified": "2025-11-08T15:23:12.822754"
+  },
+  "/app/fastapi_app/cortex/cortex_engine.py": {
+    "size": 4052,
+    "modified": "2025-11-08T16:48:33.917505"
+  },
+  "/app/fastapi_app/endpoints/endpoints_cortex.py": {
+    "size": 5028,
+    "modified": "2025-11-08T16:48:42.194213"
+  },
+  "/app/fastapi_app/endpoints/__init__.py": {
+    "size": 0,
+    "modified": "2025-11-08T17:15:37.107704"
+  },
+  "/app/fastapi_app/models/__init__.py": {
+    "size": 124,
+    "modified": "2025-11-09T06:06:34.022521"
+  },
+  "/app/fastapi_app/services/cortex_service.py": {
+    "size": 1837,
+    "modified": "2025-11-08T16:48:33"
+  },
+  "/app/fastapi_app/services/__init__.py": {
+    "size": 0,
+    "modified": "2025-11-08T17:15:33.375586"
+  },
+  "/app/fastapi_app/static/control.html": {
+    "size": 794,
+    "modified": "2025-10-08T18:49:35"
+  },
+  "/app/fastapi_app/static/control.js": {
+    "size": 1125,
+    "modified": "2025-10-08T18:49:51"
+  },
+  "/app/fastapi_app/static/dashboard.js": {
+    "size": 5542,
+    "modified": "2025-10-08T18:41:23"
+  },
+  "/app/fastapi_app/static/favicon.ico": {
+    "size": 0,
+    "modified": "2025-10-08T15:27:18"
+  },
+  "/app/fastapi_app/static/index.html": {
+    "size": 1026,
+    "modified": "2025-10-08T18:58:14"
+  },
+  "/app/fastapi_app/static/style.css": {
+    "size": 4596,
+    "modified": "2025-10-08T19:00:37"
+  },
+  "/app/fastapi_app/tests/test_app.py": {
+    "size": 4204,
+    "modified": "2025-11-05T12:14:48.271437"
+  },
+  "/app/fastapi_app/tests/test_apply_code.py": {
+    "size": 4304,
+    "modified": "2025-11-05T12:14:48.315863"
+  },
+  "/app/fastapi_app/tests/test_apply_code_async.py": {
+    "size": 4177,
+    "modified": "2025-11-01T08:57:22"
+  },
+  "/app/fastapi_app/tests/test_apply_target.py": {
+    "size": 202,
+    "modified": "2025-11-05T12:14:48.299379"
+  },
+  "/app/fastapi_app/tests/test_builder_core.py": {
+    "size": 360,
+    "modified": "2025-11-05T12:14:48.303944"
+  },
+  "/app/fastapi_app/tests/test_collab_flow.py": {
+    "size": 4442,
+    "modified": "2025-11-05T12:14:48.414338"
+  },
+  "/app/fastapi_app/tests/test_patch_target.py": {
+    "size": 270,
+    "modified": "2025-11-05T12:14:48.323967"
+  },
+  "/app/fastapi_app/tests/test_recovery.py": {
+    "size": 159,
+    "modified": "2025-11-04T15:37:31.811793"
+  },
+  "/app/fastapi_app/tests/test_repair.py": {
+    "size": 245,
+    "modified": "2025-11-04T15:37:31.827988"
+  },
+  "/app/fastapi_app/tests/test_unified_cortex.py": {
+    "size": 4697,
+    "modified": "2025-11-09T06:19:04.028202"
+  },
+  "/app/fastapi_app/tests/__init__.py": {
+    "size": 0,
+    "modified": "2025-10-31T10:50:46.336167"
+  },
+  "/app/fastapi_app/utils/logging_utils.py": {
+    "size": 3398,
+    "modified": "2025-11-05T12:14:48.393688"
+  },
+  "/app/fastapi_app/utils/log_validation.py": {
+    "size": 3062,
+    "modified": "2025-11-05T12:14:48.403601"
+  },
+  "/app/tests/sample_test.py": {
+    "size": 44,
+    "modified": "2025-10-03T08:08:20"
+  },
+  "/app/tests/sample_test.py.bak": {
+    "size": 44,
+    "modified": "2025-10-03T08:08:20"
+  },
+  "/app/config/.env": {
+    "size": 436,
+    "modified": "2025-11-08T17:07:24"
+  },
+  "/app/docs/CI_CD_Cortex_Sync_v1.4.6.md": {
+    "size": 499,
+    "modified": "2025-11-08T15:29:59"
+  },
+  "/app/docs/portainer.txt": {
+    "size": 186,
+    "modified": "2025-11-06T08:11:58"
+  },
+  "/app/docs/CI_CD_Cortex_v1.5-pre_Report.md": {
+    "size": 2057,
+    "modified": "2025-11-08T16:23:13"
+  },
+  "/app/docs/Cahier_des_Charges_Etape_1.5_Cortex.md": {
+    "size": 3387,
+    "modified": "2025-11-06T21:19:38"
+  },
+  "/app/docs/Cahier_des_Charges_MiniStudioGPT_v1.4.6_Cortex_Sync_Layer.md": {
+    "size": 5657,
+    "modified": "2025-11-08T09:30:05"
+  },
+  "/app/docs/Resume_Session_MiniStudioGPT_v1.5.md": {
+    "size": 5137,
+    "modified": "2025-11-08T16:37:33"
+  },
+  "/app/docs/Resume_Session_MiniStudioGPT_v1.4.6.md": {
+    "size": 4380,
+    "modified": "2025-11-08T09:33:19"
+  },
+  "/app/docs/README MD pour gitub/README_MiniStudioGPT_v1.2.md": {
+    "size": 3463,
+    "modified": "2025-10-29T13:37:43"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.txt": {
+    "size": 5855,
+    "modified": "2025-10-30T14:25:32"
+  },
+  "/app/docs/archives/Checklist_Nettoyage_et_Relance_Builder.txt": {
+    "size": 2072,
+    "modified": "2025-11-03T18:38:34"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.5_Structure_Map_Update.txt": {
+    "size": 3886,
+    "modified": "2025-11-05T13:36:20"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.4.txt": {
+    "size": 3704,
+    "modified": "2025-10-31T23:00:49"
+  },
+  "/app/docs/archives/MiniStudioGPT_Context_v1.4.1.md": {
+    "size": 10600,
+    "modified": "2025-10-30T17:19:20"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.4-8_CI-CD.txt": {
+    "size": 5358,
+    "modified": "2025-11-04T20:59:19"
+  },
+  "/app/docs/archives/Cahier_des_charges_Projet_FastAPI_Notes.txt": {
+    "size": 4346,
+    "modified": "2025-11-01T10:56:51"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.2.md": {
+    "size": 3637,
+    "modified": "2025-10-30T19:15:10"
+  },
+  "/app/docs/archives/MiniStudioGPT_Context_v1.3.1.md": {
+    "size": 3781,
+    "modified": "2025-10-29T20:39:15"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.3.txt": {
+    "size": 5795,
+    "modified": "2025-10-29T15:03:53"
+  },
+  "/app/docs/archives/MiniStudioGPT_Context.md": {
+    "size": 4655,
+    "modified": "2025-10-29T15:12:54"
+  },
+  "/app/docs/archives/MiniStudioGPT_Session_Report_v1.4.3.md": {
+    "size": 15716,
+    "modified": "2025-10-31T20:24:38"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.2.txt": {
+    "size": 3246,
+    "modified": "2025-10-29T12:57:10"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT.txt": {
+    "size": 4447,
+    "modified": "2025-10-29T09:25:07"
+  },
+  "/app/docs/archives/Cahier_des_charges_Memoire.txt": {
+    "size": 2155,
+    "modified": "2025-10-21T06:03:50"
+  },
+  "/app/docs/archives/MiniStudioGPT_BuilderInstructions_v1.4.1.md": {
+    "size": 3637,
+    "modified": "2025-10-30T19:15:12"
+  },
+  "/app/docs/archives/Cahier_des_charges_MiniStudioGPT_v1.4.3.txt": {
+    "size": 3766,
+    "modified": "2025-10-31T08:34:48"
+  },
+  "/app/docs/archives/MiniStudioGPT_Session_Report_v1.4.4.md": {
+    "size": 20426,
+    "modified": "2025-11-01T10:02:39"
+  },
+  "/app/.vscode/settings.json": {
+    "size": 3,
+    "modified": "2025-11-05T10:18:39"
+  },
+  "/app/frontend/.gitignore": {
+    "size": 253,
+    "modified": "2025-10-09T14:25:45"
+  },
+  "/app/frontend/eslint.config.js": {
+    "size": 621,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/index.html": {
+    "size": 357,
+    "modified": "2025-10-09T14:34:37"
+  },
+  "/app/frontend/package-lock.json": {
+    "size": 163962,
+    "modified": "2025-10-09T15:07:27"
+  },
+  "/app/frontend/package.json": {
+    "size": 820,
+    "modified": "2025-10-09T15:07:26"
+  },
+  "/app/frontend/postcss.config.js": {
+    "size": 81,
+    "modified": "2025-10-09T13:09:04"
+  },
+  "/app/frontend/README.md": {
+    "size": 2555,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/tailwind.config.js": {
+    "size": 183,
+    "modified": "2025-10-09T13:09:04"
+  },
+  "/app/frontend/tsconfig.app.json": {
+    "size": 732,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/tsconfig.json": {
+    "size": 119,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/tsconfig.node.json": {
+    "size": 653,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/vite.config.ts": {
+    "size": 161,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/public/vite.svg": {
+    "size": 1497,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/src/App.css": {
+    "size": 606,
+    "modified": "2025-10-09T14:25:45"
+  },
+  "/app/frontend/src/App.tsx": {
+    "size": 744,
+    "modified": "2025-10-09T12:39:54"
+  },
+  "/app/frontend/src/index.css": {
+    "size": 105,
+    "modified": "2025-10-09T13:09:04"
+  },
+  "/app/frontend/src/main.tsx": {
+    "size": 230,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/src/api/client.ts": {
+    "size": 277,
+    "modified": "2025-10-09T12:39:54"
+  },
+  "/app/frontend/src/assets/react.svg": {
+    "size": 4126,
+    "modified": "2025-10-09T14:25:46"
+  },
+  "/app/frontend/src/components/Analyzer.tsx": {
+    "size": 3020,
+    "modified": "2025-10-19T17:46:25.880361"
+  },
+  "/app/frontend/src/components/FileList.tsx": {
+    "size": 616,
+    "modified": "2025-10-09T12:39:54"
+  },
+  "/app/frontend/src/components/History.tsx": {
+    "size": 645,
+    "modified": "2025-10-09T12:39:54"
+  },
+  "/app/frontend/src/components/Login.tsx": {
+    "size": 1112,
+    "modified": "2025-10-09T12:39:54"
+  },
+  "/app/frontend/src/components/Navbar.tsx": {
+    "size": 530,
+    "modified": "2025-10-09T12:39:54"
+  }
 }

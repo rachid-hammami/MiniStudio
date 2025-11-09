@@ -39,6 +39,7 @@ dist/
 # Mémoire interne
 memory/*.json
 memory/*.log
+memory/*.db
 
 # Snapshots internes
 snapshots/*
@@ -53,8 +54,6 @@ session_audit.log
 ###################
 #  SQLITE / BDD
 ###################
-
-# SQLite databases & temp files
 *.db
 *.sqlite
 *.db-shm
@@ -122,7 +121,5 @@ Desktop.ini
 #  TESTS
 ###################
 
-# pytest cache
 .pytest_cache/
 .coverage
-memory/session.log

@@ -163,9 +163,10 @@ async def root():
 
 # --- Import des routes ---
 from fastapi_app.endpoints_project import router as project_router
+from fastapi_app.endpoints.endpoints_cortex import router as cortex_router
 
 app.include_router(project_router, tags=["MiniStudioGPT Project"])
-
+app.include_router(cortex_router, tags=["CORTEX"])
 
 # --- Point d'entrée ---
 if __name__ == "__main__":
