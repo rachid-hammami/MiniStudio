@@ -1,5 +1,13 @@
 # MiniStudio — Environnement de développement (FastAPI & React)
 
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-backend-green)
+![React](https://img.shields.io/badge/React-frontend-blue)
+![Docker](https://img.shields.io/badge/Docker-containerization-blue)
+![CI](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-orange)
+
+## Description
+
 ## Description
 
 MiniStudio est un environnement de développement personnel construit avec **FastAPI (Python)** et **React (Vite)**.
