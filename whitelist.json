@@ -1,0 +1,11 @@
+{
+  "allowed_files": [
+    "fastapi_app/*.py",
+    "tests/*.py",
+    "init_db.py",
+    "requirements.txt",
+    "docker-compose.yml",
+    "Dockerfile",
+    "README.md"
+  ]
+}

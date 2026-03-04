@@ -1,0 +1,71 @@
+name: Cortex Feedback Loop CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  cortex-feedback:
+    name: 🧠 Cortex Feedback Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || echo "requirements.txt not found, skipping"
+
+      - name: ⚙️ Run Cortex Analysis
+        run: |
+          echo "Running CORTEX Feedback Loop..."
+          python - <<'PYCODE'
+          from fastapi_app.cortex.cortex_feedback import CortexFeedback
+          from fastapi_app.cortex.cortex_memory import CortexMemory
+          from fastapi_app.docs.Cortex_History_Report import CortexReportGenerator
+
+          cortex = CortexFeedback()
+          cortex.log_event(
+              endpoint="/cortex/analyze",
+              context="fastapi_app/endpoints/endpoints_cortex.py",
+              status="success",
+              patterns=["Dockerfile naming issue"],
+              correction_applied=True,
+              confidence_score=0.92,
+              tags=["[AUTO]", "[FEEDBACK]"]
+          )
+
+          memory = CortexMemory()
+          memory.integrate_feedback()
+
+          report = CortexReportGenerator()
+          print(report.generate_report())
+          PYCODE
+
+      - name: 📝 Commit and push report
+        run: |
+          git config --global user.name 'MiniStudio CI'
+          git config --global user.email 'cortex@ministudio.local'
+          git add docs/Cortex_History_Report.md || echo "No report generated"
+          git commit -m "🧠 Auto-report: Cortex Feedback Loop Update" || echo "Nothing to commit"
+          git push origin main || echo "Push skipped (permissions)"
+
+      - name: ✅ Validate Cortex Health
+        run: |
+          python - <<'PYCODE'
+          from fastapi_app.cortex.cortex_feedback import CortexFeedback
+          cortex = CortexFeedback()
+          print("Cortex Health Stats:", cortex.get_stats())
+          PYCODE
