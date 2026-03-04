@@ -1,70 +1,53 @@
-# MiniStudio -- Environnement de développement structuré (FastAPI & React)
+# MiniStudio — Environnement de développement (FastAPI & React)
 
 ## Description
 
-MiniStudio est un environnement de développement personnel construit
-avec **FastAPI (Python)** et **React (Vite)**.
+MiniStudio est un environnement de développement personnel construit avec **FastAPI (Python)** et **React (Vite)**.
 
-Il permet d'expérimenter :
+Le projet sert de laboratoire pour expérimenter une **architecture backend modulaire**, une **API REST structurée**, ainsi qu'une **infrastructure Docker et CI/CD**.
 
--   Architecture backend modulaire
--   API REST structurée
--   Persistance des données
--   Automatisation via CI/CD
--   Dockerisation complète
-
-Le projet sert de laboratoire d'architecture backend et d'organisation
-applicative.
-
-------------------------------------------------------------------------
+---
 
 ## Stack technique
 
-### Backend
+**Backend**
 
--   FastAPI (Python)
--   Architecture modulaire
--   Pytest
+- FastAPI
+- Architecture modulaire
+- Pytest
 
-### Frontend
+**Frontend**
 
--   React (Vite)
--   Tailwind CSS
+- React (Vite)
+- Tailwind CSS
 
-### Infrastructure
+**Infrastructure**
 
--   Docker
--   Docker Compose
--   GitHub Actions (CI/CD)
+- Docker
+- Docker Compose
+- GitHub Actions
 
-------------------------------------------------------------------------
+---
 
-## Fonctionnalités principales
+## Fonctionnalités
 
--   API REST organisée par modules
--   Système de persistance des données
--   Tests automatisés
--   Pipeline CI/CD
--   Structure évolutive
+- API REST modulaire
+- système de persistance des données
+- tests automatisés
+- pipeline CI/CD
+- architecture évolutive
 
-------------------------------------------------------------------------
+---
 
-## Installation locale
+## Installation
 
-``` bash
+```bash
 git clone https://github.com/rachid-hammami/MiniStudio.git
 cd MiniStudio
 pip install -r requirements.txt
 uvicorn fastapi_app.main:app --reload
 ```
 
-------------------------------------------------------------------------
-
-## Documentation technique
-
-La documentation complète (architecture détaillée, modules, historique
-versions) est disponible dans le dossier `/docs`.
-
-------------------------------------------------------------------------
+---
 
 Projet maintenu par **Rachid Hammami**.
